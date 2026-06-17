@@ -174,12 +174,12 @@ The 16-column grid is useful when you need columns that don't divide evenly in a
 Both `tg-frac` and `tg-span` support all five responsive breakpoint prefixes. Stack multiple breakpoint classes to build layouts that reflow at each screen size.
 
 ```html html
-<!-- Mobile: full width → sm: half width → lg: one-quarter -->
+<!-- Mobile: full width (default stacked) → sm: half width → lg: one-quarter -->
 <div class="tg-row">
-  <div class="tg-cell tg-frac(1/1) sm:tg-frac(1/2) lg:tg-frac(1/4)">Card A</div>
-  <div class="tg-cell tg-frac(1/1) sm:tg-frac(1/2) lg:tg-frac(1/4)">Card B</div>
-  <div class="tg-cell tg-frac(1/1) sm:tg-frac(1/2) lg:tg-frac(1/4)">Card C</div>
-  <div class="tg-cell tg-frac(1/1) sm:tg-frac(1/2) lg:tg-frac(1/4)">Card D</div>
+  <div class="tg-cell sm:tg-frac(1/2) lg:tg-frac(1/4)">Card A</div>
+  <div class="tg-cell sm:tg-frac(1/2) lg:tg-frac(1/4)">Card B</div>
+  <div class="tg-cell sm:tg-frac(1/2) lg:tg-frac(1/4)">Card C</div>
+  <div class="tg-cell sm:tg-frac(1/2) lg:tg-frac(1/4)">Card D</div>
 </div>
 ```
 
@@ -195,5 +195,5 @@ Both `tg-frac` and `tg-span` support all five responsive breakpoint prefixes. St
 ```
 
 <Note>
-  `tg-frac(1/1)` (i.e., 100% width) is not a built-in class. For full-width cells, use the default stacked mode or `tg-mode(stacked)` instead. The available fractions are `1/2`, `1/3`, `1/4`, and `2/3` only.
+  `tg-frac(1/1)` does not exist. The available fractions are `1/2`, `1/3`, `1/4`, and `2/3` only. For full-width cells, rely on the default stacked behaviour (no frac class needed) or apply `tg-mode(stacked)` explicitly.
 </Note>

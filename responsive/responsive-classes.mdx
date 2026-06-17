@@ -18,7 +18,10 @@ This class does nothing on screens narrower than `48em` (768px). At `48em` and a
 
 ```css
 @media only screen and (min-width: 48em) {
-  .sm\:tg-mode\(auto\) > .tg-cell {
+  .tg-row.sm\:tg-mode\(auto\) {
+    display: flex;
+  }
+  .tg-row.sm\:tg-mode\(auto\) > .tg-cell {
     flex: 1 0 0;
     width: unset;
   }
@@ -204,12 +207,20 @@ Responsive classes are plain CSS class selectors with escaped colons. When Tidgr
   margin-left: -0.25rem;
   margin-top: -0.25rem;
 }
+.tg-gap\(xs\) > .tg-cell {
+  padding-left: 0.25rem;
+  padding-top: 0.25rem;
+}
 
 /* xs breakpoint */
 @media only screen and (min-width: 36em) {
   .xs\:tg-gap\(xs\) {
     margin-left: -0.25rem;
     margin-top: -0.25rem;
+  }
+  .xs\:tg-gap\(xs\) > .tg-cell {
+    padding-left: 0.25rem;
+    padding-top: 0.25rem;
   }
 }
 
@@ -218,6 +229,10 @@ Responsive classes are plain CSS class selectors with escaped colons. When Tidgr
   .sm\:tg-gap\(xs\) {
     margin-left: -0.25rem;
     margin-top: -0.25rem;
+  }
+  .sm\:tg-gap\(xs\) > .tg-cell {
+    padding-left: 0.25rem;
+    padding-top: 0.25rem;
   }
 }
 /* ...md, lg, xl follow */

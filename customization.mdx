@@ -1,7 +1,7 @@
 ---
 title: "Customizing Tidgrid: SCSS Variables and Configuration"
 sidebarTitle: "Customization"
-description: "Configure Tidgrid's SCSS variables to change class syntax, namespace prefix, breakpoints, gap sizes, row sizes, and layout spacing before compilation."
+description: "Configure Tidgrid's SCSS variables: syntax, namespace, breakpoints, gap scale, row sizes, fractions, and layout spacing — all applied at compile time."
 ---
 
 All of Tidgrid's configurable options are exposed as SCSS variables with sensible defaults. Overriding them requires a SCSS build pipeline — pass your values through the `@use ... with ()` syntax when importing the library and the output CSS will reflect your settings. This approach means configuration happens at compile time, producing only the classes your project needs.
@@ -170,6 +170,44 @@ Each value in the list generates a full set of `tg-span(n)` utilities for use in
 
 ---
 
+## Fractional cell widths
+
+Defined in `src/grid/row.scss`, the `$fractions` map controls which fraction-based width classes are generated for `tg-frac()` cells.
+
+```scss
+$fractions: (
+  "1/2": 50%,
+  "1/3": 33.333%,
+  "1/4": 25%,
+  "2/3": 66.667%,
+) !default;
+```
+
+The default set covers the most common halves, thirds, and quarters. To add or replace fractions, supply a custom map using SCSS `math.div` for precise values:
+
+```scss
+@use 'sass:math';
+@use 'tidgrid/src/index' with (
+  $fractions: (
+    "1/2": math.div(1, 2),
+    "1/3": math.div(1, 3),
+    "1/6": math.div(1, 6),
+  )
+);
+```
+
+Each key in the map becomes the value token used in the class name:
+
+```html
+<!-- Uses the "1/3" and "2/3" fraction classes -->
+<div class="tg-row">
+  <div class="tg-cell tg-frac(1/3)">One third</div>
+  <div class="tg-cell tg-frac(2/3)">Two thirds</div>
+</div>
+```
+
+---
+
 ## Gap sizes
 
 Defined in `src/grid/gap.scss`, the `$gaps` map sets the named spacing scale used by `tg-gap()`, `tg-x-gap()`, and `tg-y-gap()`.
@@ -264,8 +302,13 @@ The following shows all configurable variables in a single `@use` block:
     lg: 75em,
   ),
 
-  // Row column sizes (src/grid/row.scss)
+  // Row column sizes & fractions (src/grid/row.scss)
   $row-sizes: (12,),
+  $fractions: (
+    "1/2": math.div(1, 2),
+    "1/3": math.div(1, 3),
+    "1/6": math.div(1, 6),
+  ),
 
   // Gap scale (src/grid/gap.scss)
   $gaps: (

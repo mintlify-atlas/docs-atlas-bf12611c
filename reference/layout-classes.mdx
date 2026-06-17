@@ -51,7 +51,7 @@ Section and footer classes add vertical padding to page sections, ensuring consi
 | `.tg-section-padding(default)` | `3rem` | `3rem` |
 | `.tg-section-padding(none)` | `0` | `0` |
 
-The `.tg-section` and `.tg-footer` elements are static — their padding is always applied. Use `.tg-section-padding(default)` and `.tg-section-padding(none)` as utility variants when you need to apply or reset section padding on an element that may already carry other styles.
+The `.tg-section` and `.tg-footer` elements are static — their padding is always applied and they have no responsive variants. `.tg-section-padding(default)` and `.tg-section-padding(none)` are utility variants for applying or resetting section padding on elements that may already carry other styles; these two variants do support responsive breakpoint prefixes (e.g. `md:tg-section-padding(none)`).
 
 ```html
 <!-- A standard content section -->
@@ -144,7 +144,7 @@ This example shows all layout classes working together to form a typical page st
 ```
 
 <Note>
-  Layout classes (`tg-container`, `tg-section`, `tg-footer`) do **not** support breakpoint prefix variants like `sm:tg-container`. They handle responsive behaviour internally — `.tg-container` updates its margins and max-width through media queries automatically, without any extra classes on your element.
+  `.tg-container`, `.tg-section`, and `.tg-footer` do **not** support breakpoint prefix variants — they handle responsive behaviour internally. `.tg-section-padding(default)` and `.tg-section-padding(none)` are the exception: they do accept breakpoint prefixes (e.g. `md:tg-section-padding(none)`).
 </Note>
 
 <Accordion title="How does tg-container centering work?">

@@ -1,7 +1,7 @@
 ---
-title: "Tidgrid Breakpoints: Responsive Design Reference"
+title: "Tidgrid Breakpoints Reference: Mobile-First em Values"
 sidebarTitle: "Breakpoints"
-description: "Explore Tidgrid's five built-in mobile-first breakpoints, their em and px values, and how to customize them via SCSS variables."
+description: "Explore Tidgrid's five built-in mobile-first breakpoints, their em and px values, and how to override them with your own SCSS breakpoint map."
 ---
 
 Tidgrid ships with five built-in breakpoints that power its entire responsive system. All breakpoints use `min-width` media queries, which means styles cascade upward — a class applied at the `sm` breakpoint takes effect at 768px and stays active at every larger size. You only override what needs to change, and you do it by layering breakpoint-prefixed classes on top of your base styles.
@@ -34,14 +34,21 @@ The generated CSS looks like this internally:
 
 ```css
 /* Base — applies everywhere */
-.tg-mode\(stacked\) > .tg-cell {
+.tg-row.tg-mode\(stacked\) {
+  display: flex;
+  flex-wrap: wrap;
+}
+.tg-row.tg-mode\(stacked\) > .tg-cell {
   flex: none;
   width: 100%;
 }
 
 /* sm and above — min-width: 48em */
 @media only screen and (min-width: 48em) {
-  .sm\:tg-mode\(auto\) > .tg-cell {
+  .tg-row.sm\:tg-mode\(auto\) {
+    display: flex;
+  }
+  .tg-row.sm\:tg-mode\(auto\) > .tg-cell {
     flex: 1 0 0;
     width: unset;
   }
