@@ -1,0 +1,230 @@
+---
+title: "Tidgrid Section & Footer: Vertical Page Spacing"
+sidebarTitle: "Section & Footer"
+description: "Add consistent vertical rhythm to your pages with tg-section, tg-footer, and the tg-section-padding modifier for responsive padding control."
+---
+
+Consistent vertical spacing between page regions — hero, features, testimonials, footer — is one of the most common layout needs, and also one of the easiest to let drift out of sync across a project. Tidgrid addresses this with two purpose-built classes: `.tg-section` for page sections and `.tg-footer` for the footer, plus a `tg-section-padding` modifier that lets you override the padding in one place or toggle it off entirely at any breakpoint.
+
+## tg-section
+
+Add `.tg-section` to any `<section>` or block element that should have equal vertical breathing room above and below its content. The class applies `3rem` of padding on both the top and bottom edges.
+
+```html html
+<section class="tg-section">
+  <div class="tg-container(md)">
+    <h2>About us</h2>
+    <p>We make things with CSS.</p>
+  </div>
+</section>
+```
+
+Compiled output:
+
+```css css
+.tg-section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+```
+
+<Note>
+  `.tg-section` only manages vertical padding. It does not add display, flex, or any structural properties — pair it freely with a `.tg-container` for centering or a `.tg-row` for columns inside.
+</Note>
+
+## tg-footer
+
+`.tg-footer` gives your page footer a slightly asymmetric rhythm: `3rem` on top (matching section spacing) and `5rem` on the bottom, providing extra clearance at the base of the page — useful for mobile browsers where UI chrome at the bottom can overlap content.
+
+```html html
+<footer class="tg-footer">
+  <div class="tg-container(lg)">
+    <div class="tg-row">
+      <div class="tg-cell">© 2025 Tidgrid</div>
+      <div class="tg-cell">Privacy · Terms</div>
+    </div>
+  </div>
+</footer>
+```
+
+Compiled output:
+
+```css css
+.tg-footer {
+  padding-top: 3rem;
+  padding-bottom: 5rem;
+}
+```
+
+## tg-section-padding modifier
+
+The `tg-section-padding` modifier class gives you explicit control over vertical padding without using `.tg-section` or `.tg-footer` as the source of truth. It has two variants:
+
+| Class | Effect |
+|---|---|
+| `tg-section-padding(default)` | Applies `padding-top: 3rem; padding-bottom: 3rem` (same as `.tg-section`) |
+| `tg-section-padding(none)` | Removes vertical padding: `padding-top: 0; padding-bottom: 0` |
+
+### Applying default padding explicitly
+
+Use `tg-section-padding(default)` when you want the standard section spacing but are not using the semantic `.tg-section` class — for example, on a `<div>` wrapper that serves as a section but already carries other semantic meaning.
+
+```html html
+<div class="tg-section-padding(default)">
+  <div class="tg-container(md)">
+    <h2>Pricing</h2>
+  </div>
+</div>
+```
+
+### Removing padding
+
+`tg-section-padding(none)` is a utility reset. Use it to strip vertical padding from an element that inherits section spacing — for example, a nested block inside a `.tg-section` that needs no additional breathing room, or a mobile breakpoint override.
+
+```html html
+<!-- Strip padding on a specific inner block -->
+<section class="tg-section">
+  <div class="tg-container(md)">
+
+    <!-- This callout needs no extra top/bottom padding -->
+    <div class="tg-section-padding(none) callout">
+      Important notice
+    </div>
+
+  </div>
+</section>
+```
+
+### Responsive padding modifiers
+
+`tg-section-padding` supports all five breakpoint prefixes, so you can toggle section spacing contextually across screen sizes. The format is `{breakpoint}:tg-section-padding({value})`.
+
+```html html
+<!-- No padding on small screens, full section padding from md upward -->
+<section class="tg-section-padding(none) md:tg-section-padding(default)">
+  <div class="tg-container(md)">
+    <h2>Responsive section</h2>
+  </div>
+</section>
+```
+
+Available responsive variants:
+
+| Class | Active from |
+|---|---|
+| `xs:tg-section-padding(default)` | 36em (576 px) |
+| `xs:tg-section-padding(none)` | 36em (576 px) |
+| `sm:tg-section-padding(default)` | 48em (768 px) |
+| `sm:tg-section-padding(none)` | 48em (768 px) |
+| `md:tg-section-padding(default)` | 64em (1024 px) |
+| `md:tg-section-padding(none)` | 64em (1024 px) |
+| `lg:tg-section-padding(default)` | 75em (1200 px) |
+| `lg:tg-section-padding(none)` | 75em (1200 px) |
+| `xl:tg-section-padding(default)` | 90em (1440 px) |
+| `xl:tg-section-padding(none)` | 90em (1440 px) |
+
+## Complete page structure example
+
+This example demonstrates how `.tg-section`, `.tg-footer`, and `.tg-container` compose into a full, real-world page skeleton.
+
+```html html
+<body>
+
+  <!-- Site header — no vertical section padding, has its own styling -->
+  <header>
+    <div class="tg-container(lg)">
+      <nav>…</nav>
+    </div>
+  </header>
+
+  <!-- Hero: full-width section with a centred content column -->
+  <section class="tg-section">
+    <div class="tg-container(md)">
+      <div class="tg-row">
+        <div class="tg-cell">
+          <h1>Build responsive layouts fast</h1>
+          <p>Tidgrid is a tiny Flexbox-based CSS library.</p>
+        </div>
+        <div class="tg-cell">
+          <img src="hero.svg" alt="Hero" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature grid -->
+  <section class="tg-section">
+    <div class="tg-container(lg)">
+      <h2>Features</h2>
+      <div class="tg-row tg-frac(1/3)">
+        <div class="tg-cell">Expressive classes</div>
+        <div class="tg-cell">No build step required</div>
+        <div class="tg-cell">SCSS customisable</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Compact promo banner — padding stripped on mobile, restored at md -->
+  <section class="tg-section-padding(none) md:tg-section-padding(default)">
+    <div class="tg-container(sm)">
+      <p>Ready to get started? <a href="/install">Install Tidgrid →</a></p>
+    </div>
+  </section>
+
+  <!-- Footer — extra bottom padding for mobile chrome clearance -->
+  <footer class="tg-footer">
+    <div class="tg-container(lg)">
+      <div class="tg-row">
+        <div class="tg-cell">© 2025 Tidgrid</div>
+        <div class="tg-cell">Privacy · Terms · GitHub</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+```
+
+## When to use section vs. not
+
+<CardGroup cols={2}>
+  <Card title="Use tg-section when…" icon="check">
+    - You need consistent vertical spacing between page regions
+    - You're building a marketing or documentation page with multiple stacked sections
+    - You want section spacing to be driven by a single SCSS variable across the whole project
+    - You're wrapping a `.tg-container` + `.tg-row` layout block
+  </Card>
+  <Card title="Skip tg-section when…" icon="xmark">
+    - The element already has padding defined in component-specific styles
+    - You need tighter or larger padding unique to that element — use custom CSS instead
+    - The block is an inline or flex child where vertical padding would distort flow
+    - You're working inside a card or modal with its own internal spacing system
+  </Card>
+</CardGroup>
+
+## SCSS customization
+
+Both padding scales are driven by SCSS maps declared with `!default` in `src/layout/section.scss`. Override them before importing Tidgrid to apply your spacing consistently across every `.tg-section`, `.tg-footer`, and `tg-section-padding(default)` usage.
+
+```scss scss
+// _tidgrid-config.scss — import before tidgrid
+
+// Increase section vertical padding
+$section-padding: (top: 4rem, bottom: 4rem);
+
+// Keep footer asymmetric but taller
+$footer-padding: (top: 4rem, bottom: 6rem);
+
+@use "tidgrid";
+```
+
+You can also use asymmetric values for sections — for example, more breathing room below headings than above:
+
+```scss scss
+$section-padding: (top: 2rem, bottom: 4rem);
+
+@use "tidgrid";
+```
+
+<Tip>
+  Because `$section-padding` is shared between `.tg-section` and `tg-section-padding(default)`, overriding it once ensures both classes and all their responsive variants reflect your new values automatically.
+</Tip>

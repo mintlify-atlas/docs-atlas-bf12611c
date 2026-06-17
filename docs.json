@@ -1,72 +1,81 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Tidgrid",
+  "theme": "willow",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#344c5c",
+    "light": "#94a4ac",
+    "dark": "#d3d8dc"
   },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
+  "favicon": "https://media.brand.dev/410bf634-dd84-4dda-ad1e-a3f117ecf6ab.png",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "https://media.brand.dev/39ce29f1-d5f7-4db3-ab08-c78e62dee82f.svg",
+    "dark": "https://media.brand.dev/39ce29f1-d5f7-4db3-ab08-c78e62dee82f.svg"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
     "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "type": "github",
+      "href": "https://github.com/sneikki/tidgrid"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/sneikki/tidgrid"
     }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "customization"
+            ]
+          },
+          {
+            "group": "Grid",
+            "pages": [
+              "grid/rows-and-cells",
+              "grid/spans-and-fractions",
+              "grid/gaps",
+              "grid/positioning"
+            ]
+          },
+          {
+            "group": "Layout",
+            "pages": [
+              "layout/container",
+              "layout/section"
+            ]
+          },
+          {
+            "group": "Responsive Design",
+            "pages": [
+              "responsive/breakpoints",
+              "responsive/responsive-classes"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Class Reference",
+            "pages": [
+              "reference/row-classes",
+              "reference/cell-classes",
+              "reference/gap-classes",
+              "reference/position-classes",
+              "reference/layout-classes"
+            ]
+          }
+        ]
+      }
+    ]
   }
 }

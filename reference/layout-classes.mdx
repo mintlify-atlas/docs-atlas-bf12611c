@@ -1,0 +1,160 @@
+---
+title: "Layout Classes — Tidgrid Container and Section Reference"
+sidebarTitle: "Layout Classes"
+description: "Complete reference for Tidgrid layout classes: tg-container, tg-section, tg-footer, and section-padding variants for building full-page structures."
+---
+
+Layout classes provide the outer shell for Tidgrid-based pages. While grid classes operate inside flex rows, layout classes establish the page-level structure — centering content with `tg-container`, adding vertical rhythm with `tg-section`, and padding footers with `tg-footer`. These classes manage their own responsive behaviour internally and do not use breakpoint prefix variants.
+
+## Container Classes
+
+The `tg-container` class auto-centers its content using computed margins and enforces a maximum readable width. It maintains a `2rem` minimum margin on each side at all viewport sizes, expanding those margins symmetrically as the viewport exceeds the declared maximum width.
+
+The plain `.tg-container` adapts through all breakpoints automatically. The sized variants pin the container to a specific maximum width immediately, regardless of viewport size.
+
+| Class | Max-Width | Em equivalent |
+|---|---|---|
+| `.tg-container` | Responsive (scales through all breakpoints) | — |
+| `.tg-container(xs)` | `36em` | ≈ 576px |
+| `.tg-container(sm)` | `48em` | ≈ 768px |
+| `.tg-container(md)` | `64em` | ≈ 1024px |
+| `.tg-container(lg)` | `75em` | ≈ 1200px |
+| `.tg-container(xl)` | `90em` | ≈ 1440px |
+
+<Tip>
+  Use the unsized `.tg-container` for most content areas — it naturally constrains width at each breakpoint. Use a sized variant like `.tg-container(md)` when you want a permanently narrow container (for example, an article body or a login form).
+</Tip>
+
+```html
+<!-- Fully responsive container -->
+<div class="tg-container">
+  <div class="tg-row tg-mode(auto) tg-gap(md)">
+    <div class="tg-cell">Content</div>
+    <div class="tg-cell">Content</div>
+  </div>
+</div>
+
+<!-- Fixed-width article container -->
+<div class="tg-container(md)">
+  <p>This text will never exceed ~64em wide.</p>
+</div>
+```
+
+## Section and Footer Classes
+
+Section and footer classes add vertical padding to page sections, ensuring consistent spacing between stacked content blocks.
+
+| Class | `padding-top` | `padding-bottom` |
+|---|---|---|
+| `.tg-section` | `3rem` | `3rem` |
+| `.tg-footer` | `3rem` | `5rem` |
+| `.tg-section-padding(default)` | `3rem` | `3rem` |
+| `.tg-section-padding(none)` | `0` | `0` |
+
+The `.tg-section` and `.tg-footer` elements are static — their padding is always applied. Use `.tg-section-padding(default)` and `.tg-section-padding(none)` as utility variants when you need to apply or reset section padding on an element that may already carry other styles.
+
+```html
+<!-- A standard content section -->
+<section class="tg-section">
+  <div class="tg-container">
+    <div class="tg-row tg-mode(auto) tg-gap(lg)">
+      <div class="tg-cell">Column</div>
+      <div class="tg-cell">Column</div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer with extra bottom clearance -->
+<footer class="tg-footer">
+  <div class="tg-container">
+    <p>Footer content</p>
+  </div>
+</footer>
+```
+
+## Complete Page Layout Example
+
+This example shows all layout classes working together to form a typical page structure.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Tidgrid Page</title>
+  <link rel="stylesheet" href="tidgrid.css" />
+</head>
+<body>
+
+  <!-- Navigation bar -->
+  <header class="tg-section">
+    <div class="tg-container">
+      <div class="tg-row tg-space(between) tg-pos-y(center)">
+        <div class="tg-cell tg-mode(thin)">Brand</div>
+        <div class="tg-cell tg-mode(thin)">
+          <div class="tg-row tg-mode(thin) tg-gap(md)">
+            <div class="tg-cell">Home</div>
+            <div class="tg-cell">About</div>
+            <div class="tg-cell">Contact</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero section -->
+  <section class="tg-section">
+    <div class="tg-container(md)">
+      <div class="tg-row tg-mode(stacked) tg-pos(center) tg-gap(sm)">
+        <div class="tg-cell">
+          <h1>Page Headline</h1>
+        </div>
+        <div class="tg-cell">
+          <p>A short description of the page content.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature grid -->
+  <section class="tg-section">
+    <div class="tg-container">
+      <div class="tg-row tg-mode(stacked) sm:tg-frac(1/3) tg-gap(lg)">
+        <div class="tg-cell">Feature one</div>
+        <div class="tg-cell">Feature two</div>
+        <div class="tg-cell">Feature three</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="tg-footer">
+    <div class="tg-container">
+      <div class="tg-row tg-mode(auto) tg-gap(md)">
+        <div class="tg-cell">Links</div>
+        <div class="tg-cell">Social</div>
+        <div class="tg-cell">Legal</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+```
+
+<Note>
+  Layout classes (`tg-container`, `tg-section`, `tg-footer`) do **not** support breakpoint prefix variants like `sm:tg-container`. They handle responsive behaviour internally — `.tg-container` updates its margins and max-width through media queries automatically, without any extra classes on your element.
+</Note>
+
+<Accordion title="How does tg-container centering work?">
+  The container uses a `max()` function on each margin to guarantee a minimum `2rem` gutter, while also centering the element once the viewport exceeds the target width. The formula is:
+
+  ```
+  margin-left:  max(2rem, 2rem + (100% − max-width) / 2)
+  margin-right: max(2rem, 2rem + (100% − max-width) / 2)
+  max-width:    min(100%, max-width − 4rem)
+  ```
+
+  On narrow viewports the `2rem` floor kicks in, keeping content readable. On wide viewports the content block sits centred within the declared maximum width.
+</Accordion>

@@ -1,0 +1,222 @@
+---
+title: "Rows and Cells: Tidgrid's Core Layout Primitives"
+sidebarTitle: "Rows & Cells"
+description: "Learn how tg-row and tg-cell work together as Flexbox container and item, with modes for auto, stacked, thin, fill, and disabled layouts."
+---
+
+Every Tidgrid layout is built from two primitives: `.tg-row`, a Flexbox container, and `.tg-cell`, a flex item that lives inside it. Together they give you a composable, responsive layout system that needs almost no custom CSS. Understanding how their modes interact is the key to using Tidgrid effectively.
+
+## The Base Elements
+
+`.tg-row` establishes a horizontal flex container with wrapping enabled by default. `.tg-cell` is the direct child that holds your content. Both elements include `box-sizing: border-box` so padding and borders never break your layout math.
+
+```html html
+<div class="tg-row">
+  <div class="tg-cell">First cell</div>
+  <div class="tg-cell">Second cell</div>
+  <div class="tg-cell">Third cell</div>
+</div>
+```
+
+Without any mode class, cells default to **stacked mode** — each one takes the full row width (`width: 100%`), so they stack vertically. This is the safe default that works everywhere without a mode class.
+
+<Note>
+  You don't need a mode class to use `.tg-row` and `.tg-cell`. The defaults (`flex-flow: row wrap` on the row, full-width on cells) are intentionally predictable so you can add modes only where needed.
+</Note>
+
+---
+
+## Row Modes
+
+A mode class on `.tg-row` controls how **all direct `.tg-cell` children** are sized. You only need one class on the parent to change the entire row's layout behaviour.
+
+<Tabs>
+  <Tab title="auto">
+    Cells grow equally to fill all available horizontal space. Each cell gets `flex: 1 0 0`, so they share the row width evenly regardless of content.
+
+    ```html html
+    <div class="tg-row tg-mode(auto)">
+      <div class="tg-cell">One</div>
+      <div class="tg-cell">Two</div>
+      <div class="tg-cell">Three</div>
+    </div>
+    ```
+
+    All three cells above will be exactly one-third of the row width.
+  </Tab>
+  <Tab title="stacked">
+    Forces every cell to full width (`flex: none; width: 100%`). Cells stack vertically one after another. This is also the default when no mode is specified.
+
+    ```html html
+    <div class="tg-row tg-mode(stacked)">
+      <div class="tg-cell">First — full width</div>
+      <div class="tg-cell">Second — full width</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="thin">
+    Cells shrink to their content width and never grow (`flex: 0 1 0; white-space: nowrap`). Ideal for toolbars or tag lists where each cell should hug its content.
+
+    ```html html
+    <div class="tg-row tg-mode(thin)">
+      <div class="tg-cell">Label</div>
+      <div class="tg-cell">Short</div>
+      <div class="tg-cell">A longer tag</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="fill">
+    Identical behaviour to `auto` — cells grow equally with `flex: 1 0 0`. Use `fill` when you want to be semantically explicit that cells should fill the available space.
+
+    ```html html
+    <div class="tg-row tg-mode(fill)">
+      <div class="tg-cell">Left panel</div>
+      <div class="tg-cell">Right panel</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="disabled">
+    Sets `display: none` on the row, hiding the entire row and all its children. Useful with responsive prefixes to hide rows at certain breakpoints.
+
+    ```html html
+    <!-- Hidden on all screens, shown at md and above -->
+    <div class="tg-row tg-mode(disabled) md:tg-mode(auto)">
+      <div class="tg-cell">Only visible on medium+ screens</div>
+    </div>
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Cell Modes
+
+A mode class on an individual `.tg-cell` **overrides** the row-level mode for that cell only. This lets you have one cell behave differently from its siblings — for example, a fixed-width label next to auto-growing content fields.
+
+```html html
+<!-- Row is auto mode, but the first cell is pinned to thin (content-width) -->
+<div class="tg-row tg-mode(auto)">
+  <div class="tg-cell tg-mode(thin)">Label:</div>
+  <div class="tg-cell">This cell grows to fill remaining space</div>
+</div>
+```
+
+Cell modes mirror the row mode set exactly:
+
+| Class | Effect on the cell |
+|---|---|
+| `tg-mode(auto)` | `flex: 1 0 0; width: unset` — grows to fill |
+| `tg-mode(stacked)` | `flex: none; width: 100%` — full width |
+| `tg-mode(thin)` | `flex: 0 1 0; white-space: nowrap` — content width |
+| `tg-mode(fill)` | `flex: 1 0 0; width: unset` — same as auto |
+| `tg-mode(disabled)` | `display: none` — hidden |
+
+<Tip>
+  Combine responsive prefixes with cell modes to build adaptive layouts without media query CSS. A cell can be `tg-mode(stacked)` on mobile and `tg-mode(auto)` at the `md` breakpoint with just two classes.
+</Tip>
+
+```html html
+<!-- Stacked on small screens, side-by-side on medium+ -->
+<div class="tg-row">
+  <div class="tg-cell tg-mode(stacked) md:tg-mode(auto)">Sidebar</div>
+  <div class="tg-cell tg-mode(stacked) md:tg-mode(auto)">Main content</div>
+</div>
+```
+
+---
+
+## Flow Control
+
+By default, `.tg-row` uses `flex-wrap: wrap`, so cells that overflow the row width wrap onto the next line. You can override this with a flow class.
+
+<CodeGroup>
+```html tg-flow(wrap)
+<!-- Cells wrap onto new lines when they overflow (default behaviour) -->
+<div class="tg-row tg-mode(thin) tg-flow(wrap)">
+  <div class="tg-cell">Tag one</div>
+  <div class="tg-cell">Tag two</div>
+  <div class="tg-cell">Tag three that wraps</div>
+</div>
+```
+
+```html tg-flow(keep)
+<!-- Cells never wrap; row scrolls horizontally if content overflows -->
+<div class="tg-row tg-mode(thin) tg-flow(keep)">
+  <div class="tg-cell">Step 1</div>
+  <div class="tg-cell">Step 2</div>
+  <div class="tg-cell">Step 3</div>
+  <div class="tg-cell">Step 4</div>
+</div>
+```
+</CodeGroup>
+
+`tg-flow(keep)` also sets `white-space: nowrap` on all child cells, ensuring text inside them doesn't break across lines either.
+
+---
+
+## Cell Ordering
+
+The `tg-order` utilities let you reorder cells visually without changing the HTML source order — useful for accessibility (logical DOM order) while adjusting visual presentation.
+
+<Steps>
+  <Step title="Move a cell to the front">
+    Apply `tg-order(first)` to push a cell before all siblings in the visual order (`order: -2`).
+
+    ```html html
+    <div class="tg-row tg-mode(auto)">
+      <div class="tg-cell">Alpha</div>
+      <div class="tg-cell">Beta</div>
+      <div class="tg-cell tg-order(first)">I appear first visually</div>
+    </div>
+    ```
+  </Step>
+  <Step title="Move a cell to the back">
+    Apply `tg-order(last)` to push a cell after all siblings (`order: 2`).
+
+    ```html html
+    <div class="tg-row tg-mode(auto)">
+      <div class="tg-cell tg-order(last)">I appear last visually</div>
+      <div class="tg-cell">Middle</div>
+      <div class="tg-cell">Also middle</div>
+    </div>
+    ```
+  </Step>
+  <Step title="Reset ordering">
+    Use `tg-order(none)` to remove any previously applied order, restoring the natural source order (`order: unset`). Particularly handy with responsive prefixes.
+
+    ```html html
+    <!-- Reordered on mobile, natural order on desktop -->
+    <div class="tg-row tg-mode(auto)">
+      <div class="tg-cell tg-order(last) md:tg-order(none)">Sidebar</div>
+      <div class="tg-cell">Main content</div>
+    </div>
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  `tg-order(first)` uses `order: -2` and `tg-order(last)` uses `order: 2`, leaving room for intermediate values if you need to combine ordering with other Flexbox utilities in your own CSS.
+</Note>
+
+---
+
+## Responsive Variants
+
+Every row and cell class generates responsive variants for all five breakpoints. Prefix any class with a breakpoint name followed by a colon to apply it only at that screen width and above.
+
+| Prefix | Min-width |
+|---|---|
+| `xs:` | 36em (576px) |
+| `sm:` | 48em (768px) |
+| `md:` | 64em (1024px) |
+| `lg:` | 75em (1200px) |
+| `xl:` | 90em (1440px) |
+
+```html html
+<!-- Stacked on mobile → auto columns at sm → thin at lg -->
+<div class="tg-row tg-mode(stacked) sm:tg-mode(auto) lg:tg-mode(thin)">
+  <div class="tg-cell">Item A</div>
+  <div class="tg-cell">Item B</div>
+  <div class="tg-cell">Item C</div>
+</div>
+```

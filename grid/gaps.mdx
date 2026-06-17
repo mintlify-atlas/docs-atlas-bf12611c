@@ -1,0 +1,175 @@
+---
+title: "Gap Utilities: Spacing Between Tidgrid Cells"
+sidebarTitle: "Gaps"
+description: "Add consistent spacing between Tidgrid cells using tg-gap, tg-x-gap, and tg-y-gap. Six size tokens from none to xl, all with responsive breakpoint support."
+---
+
+Gap utilities add spacing between cells in a row. Rather than using the CSS `gap` property, Tidgrid implements gaps with negative margins on the row and matching padding on each cell. This approach ensures gaps compose correctly with fractional and span-based sizing without breaking flex layout math.
+
+All gap classes are applied on the `.tg-row` element. The row's child cells automatically receive the corresponding padding — you never need to add gap classes to individual cells.
+
+## Gap Directions
+
+Tidgrid provides three gap utilities depending on which axis you want to space:
+
+| Class | Axis | Properties set |
+|---|---|---|
+| `tg-gap(size)` | Both | `margin-left` + `margin-top` on row; `padding-left` + `padding-top` on cells |
+| `tg-x-gap(size)` | Horizontal only | `margin-left` on row; `padding-left` on cells |
+| `tg-y-gap(size)` | Vertical only | `margin-top` on row; `padding-top` on cells |
+
+## Gap Sizes
+
+Six size tokens are available, from no gap at all to a generous extra-large spacing:
+
+| Token | Value | Typical use |
+|---|---|---|
+| `none` | `0` | Remove a gap set by a parent or breakpoint class |
+| `xs` | `0.25rem` | Tight inline groups, tag lists |
+| `sm` | `0.5rem` | Compact UI components |
+| `md` | `0.75rem` | Default comfortable spacing |
+| `lg` | `1rem` | Card grids, content sections |
+| `xl` | `2rem` | Page-level section separation |
+
+---
+
+## Using `tg-gap`
+
+Apply `tg-gap(size)` for uniform spacing in both the horizontal and vertical directions at once. This is the most common choice for card grids and form layouts where rows wrap.
+
+```html html
+<!-- Medium gap between all cells, horizontal and vertical -->
+<div class="tg-row tg-frac(1/3) tg-gap(md)">
+  <div class="tg-cell">Card one</div>
+  <div class="tg-cell">Card two</div>
+  <div class="tg-cell">Card three</div>
+  <div class="tg-cell">Card four — wraps, gap above still applied</div>
+</div>
+```
+
+```html html
+<!-- Extra-large gap for a spacious section layout -->
+<div class="tg-row tg-frac(1/2) tg-gap(xl)">
+  <div class="tg-cell">Left panel</div>
+  <div class="tg-cell">Right panel</div>
+</div>
+```
+
+---
+
+## Using `tg-x-gap` and `tg-y-gap`
+
+Use the directional variants when you want different horizontal and vertical spacing — common in card grids that need generous row separation but tighter column gutters, or vice versa.
+
+<CodeGroup>
+```html Horizontal gap only
+<!-- Space between columns, no top spacing between rows -->
+<div class="tg-row tg-frac(1/3) tg-x-gap(lg)">
+  <div class="tg-cell">Item A</div>
+  <div class="tg-cell">Item B</div>
+  <div class="tg-cell">Item C</div>
+</div>
+```
+
+```html Vertical gap only
+<!-- Row padding between wrapped rows, columns touch -->
+<div class="tg-row tg-frac(1/3) tg-y-gap(lg)">
+  <div class="tg-cell">Item A</div>
+  <div class="tg-cell">Item B</div>
+  <div class="tg-cell">Item C</div>
+  <div class="tg-cell">Item D — vertical gap above this row</div>
+</div>
+```
+
+```html Mixed directions
+<!-- Small column gap, larger row gap -->
+<div class="tg-row tg-frac(1/4) tg-x-gap(sm) tg-y-gap(xl)">
+  <div class="tg-cell">1</div>
+  <div class="tg-cell">2</div>
+  <div class="tg-cell">3</div>
+  <div class="tg-cell">4</div>
+  <div class="tg-cell">5</div>
+  <div class="tg-cell">6</div>
+  <div class="tg-cell">7</div>
+  <div class="tg-cell">8</div>
+</div>
+```
+</CodeGroup>
+
+---
+
+## How Gaps Are Implemented
+
+<Accordion title="Implementation detail: negative margin + padding">
+  Tidgrid avoids the CSS `gap` property to maintain full compatibility with Flexbox wrapping and percentage-based sizing. Instead, it uses a classic negative-margin technique:
+
+  - The `.tg-row` receives a **negative `margin-left`** (for x-gap) and/or **negative `margin-top`** (for y-gap) equal to the gap size. This pulls the row slightly outside its container to compensate for the padding added to cells.
+  - Each direct `.tg-cell` receives **`padding-left`** (for x-gap) and/or **`padding-top`** (for y-gap) equal to the gap size.
+
+  The result is visually identical to CSS `gap` but works correctly when cells have percentage widths. A cell with `flex-basis: 50%` still occupies exactly 50% of the row — the gap appears between cells because of the padding, not by subtracting from the flex-basis.
+
+  ```css css
+  /* Example: tg-gap(lg) = 1rem */
+  .tg-row.tg-gap\(lg\) {
+    margin-left: -1rem;
+    margin-top: -1rem;
+  }
+  .tg-row.tg-gap\(lg\) > .tg-cell {
+    padding-left: 1rem;
+    padding-top: 1rem;
+  }
+  ```
+</Accordion>
+
+---
+
+## Removing a Gap
+
+Use `tg-gap(none)` (or the directional equivalents) to explicitly set a gap to zero. This is particularly useful when you need to override a gap at a specific breakpoint.
+
+```html html
+<!-- Gap on all screens, but removed at large breakpoint -->
+<div class="tg-row tg-frac(1/3) tg-gap(md) lg:tg-gap(none)">
+  <div class="tg-cell">A</div>
+  <div class="tg-cell">B</div>
+  <div class="tg-cell">C</div>
+</div>
+```
+
+---
+
+## Responsive Gaps
+
+Every gap class generates responsive variants for all five breakpoints. Add a breakpoint prefix to apply a different gap size at that screen width and above.
+
+```html html
+<!-- Small gap on mobile, large gap on medium screens and up -->
+<div class="tg-row tg-frac(1/2) tg-gap(sm) md:tg-gap(xl)">
+  <div class="tg-cell">Left</div>
+  <div class="tg-cell">Right</div>
+</div>
+```
+
+```html html
+<!-- Different horizontal and vertical gaps, both responsive -->
+<div class="tg-row tg-frac(1/3) tg-x-gap(xs) tg-y-gap(sm) md:tg-x-gap(md) md:tg-y-gap(lg)">
+  <div class="tg-cell">Card 1</div>
+  <div class="tg-cell">Card 2</div>
+  <div class="tg-cell">Card 3</div>
+  <div class="tg-cell">Card 4</div>
+  <div class="tg-cell">Card 5</div>
+  <div class="tg-cell">Card 6</div>
+</div>
+```
+
+| Breakpoint prefix | Activates at |
+|---|---|
+| `xs:` | 36em (576px) |
+| `sm:` | 48em (768px) |
+| `md:` | 64em (1024px) |
+| `lg:` | 75em (1200px) |
+| `xl:` | 90em (1440px) |
+
+<Warning>
+  Because gaps are implemented with negative margins on the row, avoid adding `overflow: hidden` to a direct parent of `.tg-row` when gaps are active — the negative margin will be clipped, causing cells to appear misaligned. Use `overflow: hidden` on an ancestor element at least one level above the row instead.
+</Warning>

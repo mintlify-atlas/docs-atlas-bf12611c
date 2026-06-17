@@ -1,0 +1,123 @@
+---
+title: "Gap Classes — Tidgrid Spacing and Gutter Reference"
+sidebarTitle: "Gap Classes"
+description: "Complete reference for Tidgrid gap classes. Learn how tg-gap, tg-x-gap, and tg-y-gap work using the negative-margin technique with responsive variants."
+---
+
+Gap classes add consistent gutters between cells inside a `.tg-row`. Tidgrid implements gaps using the classic **negative-margin technique**: a negative `margin-left` and/or `margin-top` is applied to the row to cancel out the equal `padding-left` and/or `padding-top` added to each child cell. This means gaps are symmetrical and do not create unwanted outer spacing on the row's edges.
+
+## Gap Size Scale
+
+Six named sizes are available, ranging from no gap to a generous `2rem`.
+
+| Name | Value | Typical use |
+|---|---|---|
+| `none` | `0` | Reset or explicitly remove spacing |
+| `xs` | `0.25rem` | Tight UI elements, icon rows |
+| `sm` | `0.5rem` | Compact card grids |
+| `md` | `0.75rem` | General-purpose gutters |
+| `lg` | `1rem` | Spacious content grids |
+| `xl` | `2rem` | Section-level layouts |
+
+## Gap Variant Classes
+
+Three variant families let you control gutter direction independently.
+
+| Class | Sets on Row | Sets on Child Cells | Direction |
+|---|---|---|---|
+| `.tg-gap(*)` | `margin-left: -size; margin-top: -size` | `padding-left: size; padding-top: size` | Both axes |
+| `.tg-x-gap(*)` | `margin-left: -size` | `padding-left: size` | Horizontal only |
+| `.tg-y-gap(*)` | `margin-top: -size` | `padding-top: size` | Vertical only |
+
+Replace `*` with any size name: `none`, `xs`, `sm`, `md`, `lg`, or `xl`.
+
+## Examples
+
+### Both-Axis Gap
+
+Use `.tg-gap(*)` to apply equal horizontal and vertical spacing between all cells.
+
+```html
+<div class="tg-row tg-mode(auto) tg-gap(md)">
+  <div class="tg-cell">Cell A</div>
+  <div class="tg-cell">Cell B</div>
+  <div class="tg-cell">Cell C</div>
+</div>
+```
+
+### Horizontal Gap Only
+
+Use `.tg-x-gap(*)` when you want gutters between columns but no vertical spacing — for example, in single-row toolbars.
+
+```html
+<div class="tg-row tg-mode(thin) tg-x-gap(sm)">
+  <div class="tg-cell">Button</div>
+  <div class="tg-cell">Button</div>
+  <div class="tg-cell">Button</div>
+</div>
+```
+
+### Vertical Gap Only
+
+Use `.tg-y-gap(*)` to add space between wrapped rows of cells without affecting horizontal alignment.
+
+```html
+<div class="tg-row tg-frac(1/2) tg-y-gap(lg)">
+  <div class="tg-cell">Top left</div>
+  <div class="tg-cell">Top right</div>
+  <div class="tg-cell">Bottom left</div>
+  <div class="tg-cell">Bottom right</div>
+</div>
+```
+
+### Combining X and Y Gaps
+
+You can mix `.tg-x-gap(*)` and `.tg-y-gap(*)` with different sizes to get asymmetric gutters.
+
+```html
+<div class="tg-row tg-frac(1/3) tg-x-gap(xl) tg-y-gap(sm)">
+  <div class="tg-cell">Wide horizontal gap</div>
+  <div class="tg-cell">Tight vertical gap</div>
+  <div class="tg-cell">Per axis control</div>
+</div>
+```
+
+### Resetting Gaps
+
+Use `.tg-gap(none)` to explicitly zero out all gutters — useful when overriding a gap set by a responsive variant.
+
+```html
+<div class="tg-row tg-mode(auto) tg-gap(lg) md:tg-gap(none)">
+  <div class="tg-cell">No gap at md and above</div>
+  <div class="tg-cell">No gap at md and above</div>
+</div>
+```
+
+<Warning>
+  Because gap classes apply a **negative margin** to the row, make sure the row's parent has `overflow: hidden` or sufficient padding if the negative margin would otherwise clip visible content or cause unintended scrollbars.
+</Warning>
+
+## Responsive Usage
+
+All three gap families fully support breakpoint prefixes. This lets you tighten or widen gutters at specific viewport sizes.
+
+| Breakpoint | Prefix | Min-Width |
+|---|---|---|
+| Extra small | `xs:` | `36em` (576px) |
+| Small | `sm:` | `48em` (768px) |
+| Medium | `md:` | `64em` (1024px) |
+| Large | `lg:` | `75em` (1200px) |
+| Extra large | `xl:` | `90em` (1440px) |
+
+```html
+<!-- Small gap on mobile, large gap on wider screens -->
+<div class="tg-row tg-mode(auto) tg-gap(xs) md:tg-gap(lg)">
+  <div class="tg-cell">Responsive gutters</div>
+  <div class="tg-cell">Responsive gutters</div>
+  <div class="tg-cell">Responsive gutters</div>
+</div>
+```
+
+<Tip>
+  Breakpoint gap classes compose cleanly with breakpoint mode classes. Adjust both together to produce fully adaptive grid layouts from a single row element.
+</Tip>

@@ -1,0 +1,226 @@
+---
+title: "Responsive Classes in Tidgrid: Prefix-Based Variants"
+sidebarTitle: "Responsive Classes"
+description: "Learn how to use Tidgrid's breakpoint prefixes to build adaptive layouts — stack on mobile, side-by-side on desktop, all without JavaScript."
+---
+
+Every layout utility in Tidgrid has a responsive variant for each of its five breakpoints. You unlock them with a single prefix: write the breakpoint name followed by a colon before any `tg-` class, and that class activates only when the viewport reaches the corresponding minimum width. Combine a base class for mobile behavior with one or more prefixed overrides for larger screens, and you get a fully adaptive layout in pure HTML.
+
+## How the Prefix Works
+
+The syntax is `{breakpoint}:tg-{utility}({value})`. For example:
+
+```html
+sm:tg-mode(auto)
+```
+
+This class does nothing on screens narrower than `48em` (768px). At `48em` and above, it switches the row into auto-width mode. In CSS, Tidgrid renders it as:
+
+```css
+@media only screen and (min-width: 48em) {
+  .sm\:tg-mode\(auto\) > .tg-cell {
+    flex: 1 0 0;
+    width: unset;
+  }
+}
+```
+
+You write the plain form in HTML; the browser resolves the escaped selector. The `:` in the class name is valid HTML — no special treatment needed.
+
+<Info>
+  Responsive classes are generated entirely at build time. There is no JavaScript involved. Breakpoint switching is handled by the browser's native CSS media query engine.
+</Info>
+
+## Supported Utilities
+
+All of the following utility families have full responsive variants across all five breakpoints (`xs`, `sm`, `md`, `lg`, `xl`):
+
+| Utility | What It Controls | Example |
+|---|---|---|
+| `tg-mode` | Row/cell flex behavior | `md:tg-mode(auto)` |
+| `tg-flow` | Wrapping behavior | `sm:tg-flow(keep)` |
+| `tg-frac` | Equal-fraction column widths | `md:tg-frac(1/3)` |
+| `tg-span` | Column widths by grid span | `lg:tg-span(4)` |
+| `tg-gap` | Horizontal + vertical spacing | `md:tg-gap(lg)` |
+| `tg-x-gap` | Horizontal spacing only | `sm:tg-x-gap(md)` |
+| `tg-y-gap` | Vertical spacing only | `sm:tg-y-gap(xs)` |
+| `tg-pos` | Justify + align (both axes) | `lg:tg-pos(center)` |
+| `tg-pos-x` | Justify content (horizontal) | `md:tg-pos-x(end)` |
+| `tg-pos-y` | Align items (vertical) | `md:tg-pos-y(start)` |
+| `tg-space` | Space distribution (both axes) | `lg:tg-space(between)` |
+| `tg-space-x` | Horizontal space distribution | `xl:tg-space-x(around)` |
+| `tg-space-y` | Vertical space distribution | `xl:tg-space-y(evenly)` |
+
+## Practical Examples
+
+### Stack on Mobile, Side-by-Side on Tablet
+
+The most common responsive pattern: a single column on small screens, a multi-column row on tablet and up. Apply `tg-mode(stacked)` as the base, then override with `sm:tg-mode(auto)` to flip to flexible columns at the `sm` breakpoint.
+
+```html
+<div class="tg-row tg-mode(stacked) sm:tg-mode(auto)">
+  <div class="tg-cell">First</div>
+  <div class="tg-cell">Second</div>
+  <div class="tg-cell">Third</div>
+</div>
+```
+
+<Tabs>
+  <Tab title="Mobile (< 768px)">
+    `tg-mode(stacked)` is active. Each `.tg-cell` takes `width: 100%` and stacks vertically.
+
+    ```
+    ┌─────────────────┐
+    │     First       │
+    ├─────────────────┤
+    │     Second      │
+    ├─────────────────┤
+    │     Third       │
+    └─────────────────┘
+    ```
+  </Tab>
+  <Tab title="Tablet+ (≥ 768px)">
+    `sm:tg-mode(auto)` kicks in. Each `.tg-cell` gets `flex: 1 0 0` and shares the row equally.
+
+    ```
+    ┌───────┬───────┬───────┐
+    │ First │Second │ Third │
+    └───────┴───────┴───────┘
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+### Small Gap on Mobile, Larger Gap on Desktop
+
+Scale spacing as the viewport grows. Start compact on mobile with `tg-gap(xs)` and expand to a generous gap on desktop with `md:tg-gap(lg)`.
+
+```html
+<div class="tg-row tg-mode(auto) tg-gap(xs) md:tg-gap(lg)">
+  <div class="tg-cell">Card A</div>
+  <div class="tg-cell">Card B</div>
+  <div class="tg-cell">Card C</div>
+</div>
+```
+
+<Tabs>
+  <Tab title="Mobile (< 1024px)">
+    `tg-gap(xs)` applies `0.25rem` padding on each cell and a matching negative margin on the row.
+  </Tab>
+  <Tab title="Desktop (≥ 1024px)">
+    `md:tg-gap(lg)` overrides spacing to `1rem` per cell, giving more breathing room at larger sizes.
+  </Tab>
+</Tabs>
+
+---
+
+### Center on Mobile, Space-Between on Desktop
+
+Adjust alignment and distribution to suit different screen contexts. Center items on narrow viewports, then spread them to full width on large screens.
+
+```html
+<div class="tg-row tg-pos(center) lg:tg-space(between)">
+  <div class="tg-cell tg-mode(thin)">Logo</div>
+  <div class="tg-cell tg-mode(thin)">Nav</div>
+  <div class="tg-cell tg-mode(thin)">Actions</div>
+</div>
+```
+
+<Tabs>
+  <Tab title="Mobile / Tablet (< 1200px)">
+    `tg-pos(center)` sets `justify-content: center` and `align-items: center`. Items cluster in the middle.
+  </Tab>
+  <Tab title="Large Desktop (≥ 1200px)">
+    `lg:tg-space(between)` overrides to `justify-content: space-between`, spreading items across the full row width.
+  </Tab>
+</Tabs>
+
+---
+
+### Different Cell Fractions at Different Breakpoints
+
+Control individual cell widths per breakpoint by placing responsive `tg-frac` classes directly on `.tg-cell` elements. This lets a sidebar shrink or expand as space allows.
+
+```html
+<div class="tg-row">
+  <div class="tg-cell tg-frac(1/2) md:tg-frac(1/3)">Sidebar</div>
+  <div class="tg-cell tg-frac(1/2) md:tg-frac(2/3)">Main Content</div>
+</div>
+```
+
+<Tabs>
+  <Tab title="Mobile / Tablet (< 1024px)">
+    Both cells use `tg-frac(1/2)` — a 50/50 split. The sidebar and content share the row equally.
+
+    ```
+    ┌──────────┬──────────┐
+    │ Sidebar  │  Content │
+    └──────────┴──────────┘
+       50%        50%
+    ```
+  </Tab>
+  <Tab title="Desktop (≥ 1024px)">
+    `md:tg-frac(1/3)` and `md:tg-frac(2/3)` activate. The sidebar narrows to one-third; content expands to two-thirds.
+
+    ```
+    ┌───────┬───────────────┐
+    │Sidebar│    Content    │
+    └───────┴───────────────┘
+      33%         67%
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Combining Multiple Breakpoint Prefixes
+
+You can stack as many prefixed classes as you need on a single element. Each one is independent — the browser applies whichever `min-width` condition is satisfied at the current viewport size.
+
+```html
+<!-- Stacked on mobile, 2-col at sm, 3-col at md, 4-col at lg -->
+<div class="tg-row tg-mode(stacked) sm:tg-frac(1/2) md:tg-frac(1/3) lg:tg-frac(1/4)">
+  <div class="tg-cell">Item</div>
+  <div class="tg-cell">Item</div>
+  <div class="tg-cell">Item</div>
+  <div class="tg-cell">Item</div>
+</div>
+```
+
+At any viewport, the most specific applicable rule wins via standard CSS cascade order. Tidgrid outputs breakpoint rules in ascending order (`xs` first, `xl` last), so larger breakpoints always override smaller ones correctly.
+
+<Warning>
+  A base class (no prefix) always applies unless a breakpoint variant overrides it. If you set `tg-gap(xl)` and then `md:tg-gap(none)`, the `xl`-size gap will return at screens smaller than `md` since no override cancels it there. Build mobile-first: set your smallest-screen value as the base, then override upward.
+</Warning>
+
+## How It Looks Under the Hood
+
+Responsive classes are plain CSS class selectors with escaped colons. When Tidgrid builds its CSS, `variant.generate` iterates over every breakpoint and emits a copy of each utility rule inside a `min-width` media query:
+
+```css
+/* Base — no query */
+.tg-gap\(xs\) {
+  margin-left: -0.25rem;
+  margin-top: -0.25rem;
+}
+
+/* xs breakpoint */
+@media only screen and (min-width: 36em) {
+  .xs\:tg-gap\(xs\) {
+    margin-left: -0.25rem;
+    margin-top: -0.25rem;
+  }
+}
+
+/* sm breakpoint */
+@media only screen and (min-width: 48em) {
+  .sm\:tg-gap\(xs\) {
+    margin-left: -0.25rem;
+    margin-top: -0.25rem;
+  }
+}
+/* ...md, lg, xl follow */
+```
+
+Every responsive variant is pre-generated and shipped in `tidgrid.css` — the browser does nothing more than evaluate standard CSS media queries at render time.

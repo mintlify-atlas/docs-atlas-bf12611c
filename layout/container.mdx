@@ -1,0 +1,224 @@
+---
+title: "Tidgrid Container: Responsive Centered Layouts"
+sidebarTitle: "Container"
+description: "Use tg-container to center page content with auto margins and breakpoint variants that cap your layout width at xs, sm, md, lg, or xl."
+---
+
+The container is Tidgrid's foundational layout primitive. Apply `.tg-container` to any block element and it will center itself horizontally inside its parent using automatic `margin-left` and `margin-right` calculations, while keeping a minimum `2rem` gutter on each side so content never bleeds to the viewport edge. The base class is also fully responsive — it steps through every breakpoint automatically. For tighter control, the named breakpoint variants let you hard-cap the container's maximum width at a specific size.
+
+## Base container
+
+`.tg-container` centers content and respects all five breakpoints without any additional classes. Under the hood, Tidgrid uses `calc` with `max()` and `min()` to derive the correct margins so the container stays flush-centered as the viewport grows.
+
+```html html
+<body>
+  <div class="tg-container">
+    <!-- content is centered with 2rem gutters on each side -->
+  </div>
+</body>
+```
+
+The compiled CSS for the base class looks like this — the margin and max-width expressions update at every breakpoint media query:
+
+```css css
+.tg-container {
+  margin-right: max(2rem, 2rem + (100% - 100%) / 2);
+  margin-left:  max(2rem, 2rem + (100% - 100%) / 2);
+  max-width:    min(100%, calc(100% - 2rem - 2rem));
+}
+
+@media only screen and (min-width: 36em) {
+  .tg-container {
+    margin-right: max(2rem, 2rem + (100% - 36em) / 2);
+    margin-left:  max(2rem, 2rem + (100% - 36em) / 2);
+    max-width:    min(100%, calc(36em - 2rem - 2rem));
+  }
+}
+
+/* … continues for sm (48em), md (64em), lg (75em), xl (90em) */
+```
+
+<Note>
+  The `max(2rem, …)` expression ensures the side gutter never collapses below `2rem` even on very narrow viewports, so your content is never flush against the screen edge.
+</Note>
+
+## Breakpoint variants
+
+When you want to fix the container's width ceiling at a specific breakpoint — for example, a narrow blog post column or a medium-width dashboard — add a breakpoint key in parentheses. The variant's `max-width` is locked to that breakpoint value regardless of how wide the viewport gets.
+
+| Class | Max-width cap | Pixels (approx.) |
+|---|---|---|
+| `tg-container(xs)` | 36em | 576 px |
+| `tg-container(sm)` | 48em | 768 px |
+| `tg-container(md)` | 64em | 1024 px |
+| `tg-container(lg)` | 75em | 1200 px |
+| `tg-container(xl)` | 90em | 1440 px |
+
+Each variant applies the same `calc` + `max/min` centering approach as the base class, but with the chosen breakpoint value substituted as the fixed max-width ceiling.
+
+```css css
+/* tg-container(md) — fixed at 64em */
+.tg-container\(md\) {
+  margin-right: max(2rem, 2rem + (100% - 64em) / 2);
+  margin-left:  max(2rem, 2rem + (100% - 64em) / 2);
+  max-width:    min(100%, calc(64em - 2rem - 2rem));
+}
+```
+
+### Examples by variant
+
+<CodeGroup>
+
+```html tg-container(xs) — narrow column
+<!-- Ideal for a centered auth form or tight reading column -->
+<main>
+  <div class="tg-container(xs)">
+    <h1>Sign in</h1>
+    <form>…</form>
+  </div>
+</main>
+```
+
+```html tg-container(sm) — compact layout
+<!-- Good for a blog post or article body -->
+<article>
+  <div class="tg-container(sm)">
+    <h1>Post title</h1>
+    <p>Article body…</p>
+  </div>
+</article>
+```
+
+```html tg-container(md) — standard app layout
+<!-- Fits most dashboards and content-heavy pages -->
+<div class="tg-container(md)">
+  <nav>…</nav>
+  <main>…</main>
+</div>
+```
+
+```html tg-container(lg) — wide content
+<!-- Marketing pages, feature grids -->
+<div class="tg-container(lg)">
+  <section>…</section>
+</div>
+```
+
+```html tg-container(xl) — full-width layouts
+<!-- Edge-to-edge hero sections on large screens -->
+<div class="tg-container(xl)">
+  <section class="hero">…</section>
+</div>
+```
+
+</CodeGroup>
+
+## Using container with rows and cells
+
+`.tg-container` pairs directly with Tidgrid's `.tg-row` and `.tg-cell` grid system. Place a container around your rows to keep the entire grid centered and respecting your chosen max-width. The container imposes no flex context of its own, so row and cell behaviour is unaffected.
+
+```html html
+<div class="tg-container(md)">
+  <div class="tg-row">
+    <div class="tg-cell">Sidebar</div>
+    <div class="tg-cell">Main content</div>
+  </div>
+</div>
+```
+
+You can also nest containers: use a wider container for the page frame and a narrower one inside a section for a constrained text column.
+
+```html html
+<!-- Outer frame at lg -->
+<div class="tg-container(lg)">
+
+  <!-- Full-width banner row inside the lg container -->
+  <div class="tg-row">
+    <div class="tg-cell">
+      <h1>Page title</h1>
+    </div>
+  </div>
+
+  <!-- Inner text column capped at sm -->
+  <div class="tg-container(sm)">
+    <p>A narrower reading column nested inside the wider page frame.</p>
+  </div>
+
+</div>
+```
+
+## Full page-layout example
+
+This example combines `.tg-container`, `.tg-section`, `.tg-row`, and `.tg-footer` to produce a complete page skeleton.
+
+```html html
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="tg-container(lg)">
+      <nav>…</nav>
+    </div>
+  </header>
+
+  <!-- Hero section -->
+  <section class="tg-section">
+    <div class="tg-container(md)">
+      <div class="tg-row">
+        <div class="tg-cell">
+          <h1>Welcome to Tidgrid</h1>
+          <p>A tiny, expressive CSS layout library.</p>
+        </div>
+        <div class="tg-cell">
+          <img src="hero.png" alt="Hero illustration" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature grid -->
+  <section class="tg-section">
+    <div class="tg-container(lg)">
+      <div class="tg-row tg-frac(1/3)">
+        <div class="tg-cell">Feature A</div>
+        <div class="tg-cell">Feature B</div>
+        <div class="tg-cell">Feature C</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="tg-footer">
+    <div class="tg-container(lg)">
+      <p>© 2025 Tidgrid</p>
+    </div>
+  </footer>
+
+</body>
+```
+
+## SCSS customization
+
+The `$margin` variable controls the left and right gutter for every container variant. Override it before importing Tidgrid to adjust the default `2rem` gutters globally.
+
+```scss scss
+// _tidgrid-config.scss — import before tidgrid
+
+// Change both gutters to 1.5rem
+$margin: (left: 1.5rem, right: 1.5rem);
+
+@use "tidgrid";
+```
+
+You can also set asymmetric gutters:
+
+```scss scss
+// Wider right gutter for a sidebar-style offset
+$margin: (left: 1rem, right: 3rem);
+
+@use "tidgrid";
+```
+
+<Tip>
+  The `$margin` variable is declared with `!default` in `src/layout/container.scss`, which means any value you assign before the `@use` takes effect without needing to override an existing rule.
+</Tip>

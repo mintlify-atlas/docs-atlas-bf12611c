@@ -1,0 +1,289 @@
+---
+title: "Customizing Tidgrid: SCSS Variables and Configuration"
+sidebarTitle: "Customization"
+description: "Configure Tidgrid's SCSS variables to change class syntax, namespace prefix, breakpoints, gap sizes, row sizes, and layout spacing before compilation."
+---
+
+All of Tidgrid's configurable options are exposed as SCSS variables with sensible defaults. Overriding them requires a SCSS build pipeline — pass your values through the `@use ... with ()` syntax when importing the library and the output CSS will reflect your settings. This approach means configuration happens at compile time, producing only the classes your project needs.
+
+<Warning>
+  SCSS variable overrides only work when you import Tidgrid from source (e.g. `@use 'tidgrid/src/index'`). They have **no effect** on the pre-built CDN stylesheet. If you are using the CDN, you cannot customize Tidgrid's output.
+</Warning>
+
+## How to apply overrides
+
+Pass variable overrides in the `with ()` block of your `@use` declaration:
+
+```scss
+@use 'tidgrid/src/index' with (
+  $syntax: dashes,
+  $use-namespace: false,
+  $default-breakpoints: (
+    sm: 48em,
+    lg: 75em,
+  ),
+);
+```
+
+All variables are optional. Any variable you omit keeps its default value.
+
+---
+
+## Namespace and syntax
+
+These variables are defined in `src/namespace.scss` and control the fundamental shape of every generated class name.
+
+### `$syntax`
+
+Controls the format used for modifier class names.
+
+| Value | Default | Description |
+|-------|---------|-------------|
+| `parentheses` | ✅ | Values are wrapped in parentheses: `tg-mode(auto)` |
+| `dashes` | — | Values are separated by dashes: `tg-mode-auto` |
+
+<Tabs>
+  <Tab title="parentheses (default)">
+    ```scss
+    @use 'tidgrid/src/index'; // $syntax defaults to parentheses
+    ```
+    Generated class names:
+    ```html
+    <div class="tg-row tg-mode(auto) tg-gap(md)">
+      <div class="tg-cell tg-frac(1/2)">...</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="dashes">
+    ```scss
+    @use 'tidgrid/src/index' with (
+      $syntax: dashes
+    );
+    ```
+    Generated class names:
+    ```html
+    <div class="tg-row tg-mode-auto tg-gap-md">
+      <div class="tg-cell tg-frac-1-2">...</div>
+    </div>
+    ```
+  </Tab>
+</Tabs>
+
+### `$use-namespace`
+
+Controls whether the `tg-` prefix is applied to all generated class names.
+
+| Value | Default | Description |
+|-------|---------|-------------|
+| `true` | ✅ | All classes are prefixed: `tg-row`, `tg-cell`, `tg-mode(auto)` |
+| `false` | — | No prefix: `row`, `cell`, `mode(auto)` |
+
+```scss
+// Remove the tg- prefix entirely
+@use 'tidgrid/src/index' with (
+  $use-namespace: false
+);
+```
+
+```html
+<!-- Without namespace -->
+<div class="row mode(auto) gap(md)">
+  <div class="cell">...</div>
+</div>
+```
+
+<Note>
+  Disabling the namespace risks class name collisions with your own CSS or third-party libraries. Only disable it if you're certain there are no conflicts.
+</Note>
+
+---
+
+## Breakpoints
+
+Defined in `src/variant.scss`, the `$default-breakpoints` map controls the responsive breakpoint scale. Every modifier class is generated once for each breakpoint in this map, so reducing the number of breakpoints also reduces the size of the compiled CSS.
+
+```scss
+// Default breakpoints
+$default-breakpoints: (
+  xs: 36em,   // ≈ 576px
+  sm: 48em,   // ≈ 768px
+  md: 64em,   // ≈ 1024px
+  lg: 75em,   // ≈ 1200px
+  xl: 90em,   // ≈ 1440px
+) !default;
+```
+
+To override the breakpoints, supply a replacement map:
+
+```scss
+@use 'tidgrid/src/index' with (
+  $default-breakpoints: (
+    sm: 48em,
+    md: 64em,
+    lg: 80em,
+  )
+);
+```
+
+Breakpoint prefix syntax in your HTML follows the map keys you define:
+
+```html
+<!-- Uses sm, md, lg prefixes matching the custom map above -->
+<div class="tg-row tg-mode(stacked) md:tg-mode(auto)">
+  <div class="tg-cell">...</div>
+</div>
+```
+
+<Tip>
+  Reducing the breakpoint map to only the breakpoints your design actually uses is one of the most effective ways to shrink Tidgrid's output — fewer breakpoints mean fewer media query blocks across all utility classes.
+</Tip>
+
+---
+
+## Row sizes
+
+Defined in `src/grid/row.scss`, the `$row-sizes` list controls which column-count grid systems are generated for `tg-span()` classes.
+
+```scss
+$row-sizes: (12, 16);
+```
+
+The default generates both a **12-column** and a **16-column** grid. To generate only a 12-column grid:
+
+```scss
+@use 'tidgrid/src/index' with (
+  $row-sizes: (12,)
+);
+```
+
+Each value in the list generates a full set of `tg-span(n)` utilities for use inside a `tg-size(N)` wrapper:
+
+```html
+<!-- 12-column grid: wrap the row in tg-size(12) -->
+<div class="tg-size(12)">
+  <div class="tg-row">
+    <div class="tg-cell tg-span(4)">4 of 12</div>
+    <div class="tg-cell tg-span(8)">8 of 12</div>
+  </div>
+</div>
+```
+
+---
+
+## Gap sizes
+
+Defined in `src/grid/gap.scss`, the `$gaps` map sets the named spacing scale used by `tg-gap()`, `tg-x-gap()`, and `tg-y-gap()`.
+
+```scss
+$gaps: (
+  none: 0,
+  xs:   0.25rem,
+  sm:   0.5rem,
+  md:   0.75rem,
+  lg:   1rem,
+  xl:   2rem,
+) !default;
+```
+
+Override the map to add, remove, or resize gap tokens:
+
+```scss
+@use 'tidgrid/src/index' with (
+  $gaps: (
+    none:  0,
+    sm:    0.5rem,
+    md:    1rem,
+    lg:    2rem,
+    xl:    4rem,
+  )
+);
+```
+
+Gap classes apply negative margin to the row and compensating padding to each cell:
+
+```html
+<div class="tg-row tg-gap(lg)">...</div>         <!-- all sides -->
+<div class="tg-row tg-x-gap(md) tg-y-gap(sm)">...</div>  <!-- axes separately -->
+<div class="tg-row md:tg-gap(xl)">...</div>      <!-- responsive -->
+```
+
+---
+
+## Container margins
+
+Defined in `src/layout/container.scss`, the `$margin` map controls the horizontal margins applied by `tg-container` and its breakpoint-scoped variants.
+
+```scss
+$margin: (left: 2rem, right: 2rem) !default;
+```
+
+```scss
+@use 'tidgrid/src/index' with (
+  $margin: (left: 1.5rem, right: 1.5rem)
+);
+```
+
+The container uses `max()` and `min()` to center itself within the viewport while enforcing these minimum side margins at every breakpoint.
+
+---
+
+## Section padding
+
+Defined in `src/layout/section.scss`, two maps control the vertical padding applied by the `tg-section` and `tg-footer` layout helpers.
+
+```scss
+$section-padding: (top: 3rem, bottom: 3rem) !default;
+$footer-padding:  (top: 3rem, bottom: 5rem) !default;
+```
+
+```scss
+@use 'tidgrid/src/index' with (
+  $section-padding: (top: 4rem, bottom: 4rem),
+  $footer-padding:  (top: 4rem, bottom: 8rem)
+);
+```
+
+These map directly to the padding applied to `.tg-section` and `.tg-footer` elements, as well as to the responsive `tg-section-padding(default)` utility class.
+
+---
+
+## Full override example
+
+The following shows all configurable variables in a single `@use` block:
+
+```scss
+@use 'tidgrid/src/index' with (
+  // Namespace & syntax (src/namespace.scss)
+  $syntax:        dashes,
+  $use-namespace: true,
+
+  // Breakpoints (src/variant.scss)
+  $default-breakpoints: (
+    sm: 48em,
+    md: 64em,
+    lg: 75em,
+  ),
+
+  // Row column sizes (src/grid/row.scss)
+  $row-sizes: (12,),
+
+  // Gap scale (src/grid/gap.scss)
+  $gaps: (
+    none: 0,
+    sm:   0.5rem,
+    md:   1rem,
+    lg:   2rem,
+  ),
+
+  // Container margins (src/layout/container.scss)
+  $margin: (left: 1.5rem, right: 1.5rem),
+
+  // Section padding (src/layout/section.scss)
+  $section-padding: (top: 4rem, bottom: 4rem),
+  $footer-padding:  (top: 4rem, bottom: 8rem),
+);
+```
+
+<Note>
+  Remember: these overrides require a SCSS compilation step. They do not apply to the pre-built CDN stylesheet. See [Installation](/installation) for setup options that support SCSS configuration.
+</Note>

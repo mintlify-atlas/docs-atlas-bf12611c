@@ -1,0 +1,122 @@
+---
+title: "Tidgrid Breakpoints: Responsive Design Reference"
+sidebarTitle: "Breakpoints"
+description: "Explore Tidgrid's five built-in mobile-first breakpoints, their em and px values, and how to customize them via SCSS variables."
+---
+
+Tidgrid ships with five built-in breakpoints that power its entire responsive system. All breakpoints use `min-width` media queries, which means styles cascade upward — a class applied at the `sm` breakpoint takes effect at 768px and stays active at every larger size. You only override what needs to change, and you do it by layering breakpoint-prefixed classes on top of your base styles.
+
+## Built-in Breakpoints
+
+The five breakpoints are defined in `src/variant.scss` as a SCSS map called `$default-breakpoints`. Each value is expressed in `em` units, making the breakpoints scale correctly when a user changes their browser's default font size.
+
+| Name | Min-Width | ~Pixels | Typical Target             |
+|------|-----------|---------|----------------------------|
+| `xs` | `36em`    | 576px   | Large phones, small tablets |
+| `sm` | `48em`    | 768px   | Tablets, landscape phones  |
+| `md` | `64em`    | 1024px  | Small laptops, tablets     |
+| `lg` | `75em`    | 1200px  | Desktops                   |
+| `xl` | `90em`    | 1440px  | Wide / large monitors      |
+
+<Info>
+  Em-based breakpoints respect the user's browser font-size preference, so `36em` equals 576px only when the root font size is the browser default of 16px. If the user sets 20px as their default, `36em` becomes 720px. This is intentional — it keeps your layout proportional to the user's reading size.
+</Info>
+
+## Mobile-First Approach
+
+Tidgrid uses a **mobile-first** strategy. There are no `max-width` queries involved — only `min-width`. This means:
+
+- **Base classes** (no prefix) apply to **all screen sizes**, starting from the smallest.
+- **Breakpoint-prefixed classes** (e.g. `sm:tg-mode(auto)`) activate at the specified minimum width **and remain active** at all larger sizes above it.
+- To change behavior at a larger breakpoint, add another prefix for that breakpoint.
+
+The generated CSS looks like this internally:
+
+```css
+/* Base — applies everywhere */
+.tg-mode\(stacked\) > .tg-cell {
+  flex: none;
+  width: 100%;
+}
+
+/* sm and above — min-width: 48em */
+@media only screen and (min-width: 48em) {
+  .sm\:tg-mode\(auto\) > .tg-cell {
+    flex: 1 0 0;
+    width: unset;
+  }
+}
+```
+
+A practical consequence: `tg-mode(stacked) sm:tg-mode(auto)` means "stack vertically on mobile, switch to auto-width columns at tablet size and wider." No JavaScript, no runtime logic — just CSS cascade.
+
+<Tip>
+  Think of each prefix as setting a floor, not a ceiling. `md:tg-gap(lg)` means "use large gaps from 1024px onward," not "only at exactly 1024px."
+</Tip>
+
+## Customizing Breakpoints
+
+If the built-in breakpoints don't match your design system, you can override them by redefining `$default-breakpoints` before importing Tidgrid in your SCSS entry file. The variable is declared with `!default`, so any assignment that comes first in the SCSS load order wins.
+
+```scss
+// your-styles.scss
+
+// Override BEFORE importing Tidgrid
+$default-breakpoints: (
+  sm:  40em,   // 640px
+  md:  60em,   // 960px
+  lg:  80em,   // 1280px
+  xl: 100em,   // 1600px
+);
+
+@use "tidgrid";
+```
+
+<Note>
+  You can use any number of breakpoints and any names you like. Tidgrid will generate responsive variants for every key in the map — no extra configuration needed.
+</Note>
+
+You can also add breakpoints on top of the defaults by merging maps:
+
+```scss
+@use "sass:map";
+
+$default-breakpoints: map.merge(
+  (
+    xs: 36em,
+    sm: 48em,
+    md: 64em,
+    lg: 75em,
+    xl: 90em,
+  ),
+  (
+    "2xl": 120em,  // 1920px — extra-wide screens
+  )
+);
+
+@use "tidgrid";
+```
+
+After rebuilding your CSS, the `2xl:` prefix becomes available on every responsive utility class.
+
+## How Variants Are Generated
+
+The `@mixin generate` in `src/variant.scss` drives all breakpoint output. It first emits the unprefixed (base) class declarations, then loops through every entry in `$default-breakpoints` and re-emits those same declarations wrapped in a `@media only screen and (min-width: $value)` query, with the breakpoint key prepended to the class name using escaped colon notation.
+
+```scss
+// Simplified illustration of what variant.generate does:
+
+// 1. Base classes (no media query)
+.tg-gap\(lg\) { ... }
+
+// 2. For each breakpoint:
+@media only screen and (min-width: 36em) {
+  .xs\:tg-gap\(lg\) { ... }
+}
+@media only screen and (min-width: 48em) {
+  .sm\:tg-gap\(lg\) { ... }
+}
+// ...and so on for md, lg, xl
+```
+
+In your HTML you write the unescaped form — `xs:tg-gap(lg)` — and the browser matches it to the escaped CSS selector automatically.

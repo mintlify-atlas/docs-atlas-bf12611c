@@ -1,0 +1,173 @@
+---
+title: "Position Classes — Tidgrid Alignment and Spacing Reference"
+sidebarTitle: "Position Classes"
+description: "Complete reference for Tidgrid position and space classes. Control justify-content and align-items on rows using tg-pos and tg-space with responsive variants."
+---
+
+Position classes control how cells are distributed and aligned within a `.tg-row` flex container. Tidgrid splits this into two groups: **pos** classes that set `justify-content` and `align-items` for edge-aligned or centered layouts, and **space** classes that set `justify-content` and `align-content` for evenly distributed spacing. Both groups offer axis-specific variants and full responsive support.
+
+## `tg-pos` — Alignment Variants
+
+The `tg-pos(*)` shorthand sets both `justify-content` (main axis) and `align-items` (cross axis) simultaneously.
+
+| Class | `justify-content` | `align-items` |
+|---|---|---|
+| `.tg-pos(start)` | `start` | `start` |
+| `.tg-pos(center)` | `center` | `center` |
+| `.tg-pos(end)` | `end` | `end` |
+| `.tg-pos(none)` | `unset` | `unset` |
+
+```html
+<!-- Horizontally and vertically center all cells -->
+<div class="tg-row tg-mode(thin) tg-pos(center)">
+  <div class="tg-cell">Centered</div>
+  <div class="tg-cell">Centered</div>
+</div>
+```
+
+## `tg-pos-x` — Horizontal Alignment
+
+Use `tg-pos-x(*)` to control only the main (horizontal) axis via `justify-content`.
+
+| Class | `justify-content` |
+|---|---|
+| `.tg-pos-x(start)` | `flex-start` |
+| `.tg-pos-x(center)` | `center` |
+| `.tg-pos-x(end)` | `flex-end` |
+| `.tg-pos-x(none)` | `unset` |
+
+```html
+<!-- Push cells to the right on large screens -->
+<div class="tg-row tg-mode(thin) lg:tg-pos-x(end)">
+  <div class="tg-cell">Right-aligned at lg</div>
+  <div class="tg-cell">Right-aligned at lg</div>
+</div>
+```
+
+## `tg-pos-y` — Vertical Alignment
+
+Use `tg-pos-y(*)` to control only the cross (vertical) axis via `align-items`.
+
+| Class | `align-items` |
+|---|---|
+| `.tg-pos-y(start)` | `flex-start` |
+| `.tg-pos-y(center)` | `center` |
+| `.tg-pos-y(end)` | `flex-end` |
+| `.tg-pos-y(none)` | `unset` |
+
+```html
+<!-- Vertically center cells of differing heights -->
+<div class="tg-row tg-mode(auto) tg-pos-y(center)">
+  <div class="tg-cell">Tall content…</div>
+  <div class="tg-cell">Short</div>
+</div>
+```
+
+## `tg-space` — Distribution Variants
+
+The `tg-space(*)` shorthand applies a `space-*` distribution to both `justify-content` (main axis) and `align-content` (line stacking for multi-line rows).
+
+| Class | `justify-content` | `align-content` |
+|---|---|---|
+| `.tg-space(between)` | `space-between` | `space-between` |
+| `.tg-space(around)` | `space-around` | `space-around` |
+| `.tg-space(evenly)` | `space-evenly` | `space-evenly` |
+| `.tg-space(none)` | `none` | `none` |
+
+```html
+<!-- Distribute cells evenly across the full row width -->
+<div class="tg-row tg-space(between)">
+  <div class="tg-cell tg-mode(thin)">Nav item</div>
+  <div class="tg-cell tg-mode(thin)">Nav item</div>
+  <div class="tg-cell tg-mode(thin)">Nav item</div>
+</div>
+```
+
+## `tg-space-x` — Horizontal Distribution
+
+Use `tg-space-x(*)` to apply a spacing distribution to the main axis only via `justify-content`.
+
+| Class | `justify-content` |
+|---|---|
+| `.tg-space-x(between)` | `space-between` |
+| `.tg-space-x(around)` | `space-around` |
+| `.tg-space-x(evenly)` | `space-evenly` |
+| `.tg-space-x(none)` | `unset` |
+
+## `tg-space-y` — Vertical Distribution
+
+Use `tg-space-y(*)` to apply a spacing distribution to line stacking only via `align-content`.
+
+| Class | `align-content` |
+|---|---|
+| `.tg-space-y(between)` | `space-between` |
+| `.tg-space-y(around)` | `space-around` |
+| `.tg-space-y(evenly)` | `space-evenly` |
+| `.tg-space-y(none)` | `unset` |
+
+## Practical Examples
+
+<Tabs>
+  <Tab title="Centered hero">
+    Center a small cluster of cells both horizontally and vertically inside a fixed-height row.
+
+    ```html
+    <div class="tg-row tg-mode(thin) tg-pos(center) tg-gap(md)">
+      <div class="tg-cell">Icon</div>
+      <div class="tg-cell">Headline</div>
+      <div class="tg-cell">CTA button</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="Navigation bar">
+    Spread nav items across the full width with `space-between`.
+
+    ```html
+    <div class="tg-row tg-space(between) tg-pos-y(center)">
+      <div class="tg-cell tg-mode(thin)">Logo</div>
+      <div class="tg-cell tg-mode(thin)">
+        <div class="tg-row tg-mode(thin) tg-gap(sm)">
+          <div class="tg-cell">Home</div>
+          <div class="tg-cell">About</div>
+          <div class="tg-cell">Contact</div>
+        </div>
+      </div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="Responsive alignment">
+    Left-align on mobile, center on medium screens and above.
+
+    ```html
+    <div class="tg-row tg-mode(thin) tg-pos-x(start) md:tg-pos-x(center)">
+      <div class="tg-cell">Item one</div>
+      <div class="tg-cell">Item two</div>
+    </div>
+    ```
+  </Tab>
+</Tabs>
+
+## Responsive Usage
+
+All `tg-pos`, `tg-pos-x`, `tg-pos-y`, `tg-space`, `tg-space-x`, and `tg-space-y` classes support breakpoint prefixes.
+
+| Breakpoint | Prefix | Min-Width |
+|---|---|---|
+| Extra small | `xs:` | `36em` (576px) |
+| Small | `sm:` | `48em` (768px) |
+| Medium | `md:` | `64em` (1024px) |
+| Large | `lg:` | `75em` (1200px) |
+| Extra large | `xl:` | `90em` (1440px) |
+
+```html
+<!-- Stack and center on mobile; spread between on large screens -->
+<div class="tg-row tg-mode(stacked) tg-pos(center) lg:tg-mode(thin) lg:tg-space(between)">
+  <div class="tg-cell">Link</div>
+  <div class="tg-cell">Link</div>
+  <div class="tg-cell">Link</div>
+</div>
+```
+
+<Note>
+  `tg-pos` and `tg-space` can conflict if both set `justify-content`. When composing them, prefer the axis-specific variants (`tg-pos-x` / `tg-space-x`) to avoid unintended overrides.
+</Note>

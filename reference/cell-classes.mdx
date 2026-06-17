@@ -1,0 +1,218 @@
+---
+title: "Cell Classes — Tidgrid Flexbox Cell Reference"
+sidebarTitle: "Cell Classes"
+description: "Complete reference for all .tg-cell classes in Tidgrid, covering mode, order, fraction, and span variants with responsive breakpoint support."
+---
+
+Cell classes define how individual items behave inside a `.tg-row` flex container. By default, `.tg-cell` stacks to full width, but a rich set of mode, order, fraction, and span variants lets you precisely override sizing and ordering per-cell — independent of what the parent row specifies.
+
+## Base Class
+
+The `.tg-cell` class defaults to stacked (full-width) layout and includes `box-sizing: border-box` so padding never breaks widths.
+
+| Class | CSS Output |
+|---|---|
+| `.tg-cell` | `flex: none; width: 100%; box-sizing: border-box` |
+
+```html
+<div class="tg-row">
+  <div class="tg-cell">I am full width by default</div>
+</div>
+```
+
+## Mode Variants
+
+Mode variants on a cell override the sizing set by the parent row's mode class for that specific cell only. This makes it straightforward to have one cell behave differently from its siblings.
+
+| Class | CSS Output |
+|---|---|
+| `.tg-mode(auto)` | `display: block; flex: 1 0 0; width: unset` |
+| `.tg-mode(stacked)` | `display: block; flex: none; width: 100%` |
+| `.tg-mode(thin)` | `display: block; flex: 0 1 0; width: unset; white-space: nowrap` |
+| `.tg-mode(fill)` | `display: block; flex: 1 0 0; width: unset` |
+| `.tg-mode(disabled)` | `display: none` |
+
+<Tabs>
+  <Tab title="auto">
+    The cell grows to claim its share of remaining row space.
+
+    ```html
+    <div class="tg-row tg-mode(thin)">
+      <div class="tg-cell">Label</div>
+      <!-- This cell overrides thin mode and grows to fill remaining space -->
+      <div class="tg-cell tg-mode(auto)">Expanding input area</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="stacked">
+    The cell resets to full-width stacked behaviour, even inside an auto or thin row.
+
+    ```html
+    <div class="tg-row tg-mode(auto)">
+      <div class="tg-cell">Grows</div>
+      <!-- Forces this cell to be full width -->
+      <div class="tg-cell tg-mode(stacked)">Always full width</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="thin">
+    The cell shrinks to its content width and suppresses text wrapping.
+
+    ```html
+    <div class="tg-row tg-mode(auto)">
+      <div class="tg-cell">Grows to fill</div>
+      <div class="tg-cell tg-mode(thin)">Fixed label</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="fill">
+    Identical behaviour to `auto` — the cell grows to fill available space.
+
+    ```html
+    <div class="tg-row">
+      <div class="tg-cell tg-mode(fill)">Fills remaining width</div>
+      <div class="tg-cell tg-mode(thin)">Sidebar</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="disabled">
+    Hides the cell entirely with `display: none`.
+
+    ```html
+    <div class="tg-row tg-mode(auto)">
+      <div class="tg-cell">Visible</div>
+      <div class="tg-cell tg-mode(disabled)">Hidden</div>
+    </div>
+    ```
+  </Tab>
+</Tabs>
+
+## Order Variants
+
+Order variants shift a cell's visual position within the flex row without changing the DOM order. This is useful for accessibility or server-rendered content that must appear in a different sequence on screen.
+
+| Class | CSS Output | Effect |
+|---|---|---|
+| `.tg-order(first)` | `order: -2` | Cell appears before all default-order siblings |
+| `.tg-order(last)` | `order: 2` | Cell appears after all default-order siblings |
+| `.tg-order(none)` | `order: unset` | Resets to natural DOM order |
+
+```html
+<div class="tg-row tg-mode(auto)">
+  <div class="tg-cell">Middle (DOM first)</div>
+  <div class="tg-cell tg-order(first)">Visually first</div>
+  <div class="tg-cell tg-order(last)">Visually last</div>
+</div>
+```
+
+<Tip>
+  Combine `tg-order(first)` and `tg-order(last)` with responsive prefixes to reorder cells differently at each breakpoint — for example, moving a sidebar below the main content on mobile.
+</Tip>
+
+## Fraction Variants
+
+Fraction variants set a fixed `flex-basis` on an individual cell, overriding any width set by the parent row. Use these to mix column sizes inside a single row.
+
+| Class | CSS Output |
+|---|---|
+| `.tg-frac(1/2)` | `width: 50%; flex: none` |
+| `.tg-frac(1/3)` | `width: 33.333%; flex: none` |
+| `.tg-frac(1/4)` | `width: 25%; flex: none` |
+| `.tg-frac(2/3)` | `width: 66.667%; flex: none` |
+
+```html
+<!-- A sidebar + main content layout using fractions -->
+<div class="tg-row">
+  <div class="tg-cell tg-frac(1/3)">Sidebar</div>
+  <div class="tg-cell tg-frac(2/3)">Main content</div>
+</div>
+```
+
+## Span Variants
+
+Span variants size a cell as a precise number of columns. The correct percentage is computed from the grid size declared on a `.tg-size(12)` or `.tg-size(16)` ancestor, but the class is placed directly on the `.tg-cell`.
+
+### 12-Column Spans
+
+| Class | Width |
+|---|---|
+| `.tg-span(1)` | `8.333%` |
+| `.tg-span(2)` | `16.667%` |
+| `.tg-span(3)` | `25%` |
+| `.tg-span(4)` | `33.333%` |
+| `.tg-span(5)` | `41.667%` |
+| `.tg-span(6)` | `50%` |
+| `.tg-span(7)` | `58.333%` |
+| `.tg-span(8)` | `66.667%` |
+| `.tg-span(9)` | `75%` |
+| `.tg-span(10)` | `83.333%` |
+| `.tg-span(11)` | `91.667%` |
+| `.tg-span(12)` | `100%` |
+
+```html
+<div class="tg-size(12)">
+  <div class="tg-row">
+    <div class="tg-cell tg-span(8)">Main (8 cols)</div>
+    <div class="tg-cell tg-span(4)">Sidebar (4 cols)</div>
+  </div>
+</div>
+```
+
+### 16-Column Spans
+
+| Class | Width |
+|---|---|
+| `.tg-span(1)` | `6.25%` |
+| `.tg-span(2)` | `12.5%` |
+| `.tg-span(4)` | `25%` |
+| `.tg-span(6)` | `37.5%` |
+| `.tg-span(8)` | `50%` |
+| `.tg-span(10)` | `62.5%` |
+| `.tg-span(12)` | `75%` |
+| `.tg-span(14)` | `87.5%` |
+| `.tg-span(16)` | `100%` |
+
+```html
+<div class="tg-size(16)">
+  <div class="tg-row">
+    <div class="tg-cell tg-span(4)">4/16 wide</div>
+    <div class="tg-cell tg-span(8)">8/16 wide</div>
+    <div class="tg-cell tg-span(4)">4/16 wide</div>
+  </div>
+</div>
+```
+
+<Note>
+  When both a row-level `.tg-span(N)` and a cell-level `.tg-span(N)` are present, the cell-level class wins because it is scoped directly to the cell element.
+</Note>
+
+## Responsive Variants
+
+All cell variant classes support breakpoint prefixes for mobile-first responsive control.
+
+| Breakpoint | Prefix | Min-Width |
+|---|---|---|
+| Extra small | `xs:` | `36em` (576px) |
+| Small | `sm:` | `48em` (768px) |
+| Medium | `md:` | `64em` (1024px) |
+| Large | `lg:` | `75em` (1200px) |
+| Extra large | `xl:` | `90em` (1440px) |
+
+```html
+<!-- Full width on mobile, half width at sm, one-third at lg -->
+<div class="tg-row">
+  <div class="tg-cell sm:tg-frac(1/2) lg:tg-frac(1/3)">
+    Responsive cell
+  </div>
+</div>
+```
+
+```html
+<!-- Cell hidden on small screens, visible at md and above -->
+<div class="tg-row tg-mode(auto)">
+  <div class="tg-cell tg-mode(disabled) md:tg-mode(auto)">
+    Hidden on mobile
+  </div>
+  <div class="tg-cell">Always visible</div>
+</div>
+```

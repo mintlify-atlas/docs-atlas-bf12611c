@@ -1,0 +1,258 @@
+---
+title: "Positioning and Spacing Cells in Tidgrid Layouts"
+sidebarTitle: "Positioning"
+description: "Align and distribute Tidgrid cells with tg-pos, tg-pos-x, tg-pos-y, tg-space, tg-space-x, and tg-space-y — all applied on the row element."
+---
+
+Tidgrid separates two distinct layout concerns: **positioning** controls where cells sit within the row (via `justify-content` and `align-items`), while **spacing** controls how leftover space is distributed between cells (via `justify-content` and `align-content`). Both sets of utilities are applied on the `.tg-row` element and affect all child cells.
+
+## Position Utilities
+
+Position utilities align cells along one or both axes. The `tg-pos` shorthand sets both axes at once; the directional variants let you control each axis independently.
+
+### `tg-pos` — both axes
+
+`tg-pos` sets both `justify-content` (horizontal) and `align-items` (vertical) to the same value in a single class.
+
+| Class | `justify-content` | `align-items` |
+|---|---|---|
+| `tg-pos(start)` | `start` | `start` |
+| `tg-pos(center)` | `center` | `center` |
+| `tg-pos(end)` | `end` | `end` |
+| `tg-pos(none)` | `unset` | `unset` |
+
+```html html
+<!-- Cells clustered in the centre of the row, horizontally and vertically -->
+<div class="tg-row tg-pos(center)" style="height: 200px;">
+  <div class="tg-cell tg-mode(thin)">Centred cell</div>
+</div>
+```
+
+```html html
+<!-- Cells pushed to the right end of the row -->
+<div class="tg-row tg-mode(thin) tg-pos(end)">
+  <div class="tg-cell">Right-aligned</div>
+  <div class="tg-cell">Also right-aligned</div>
+</div>
+```
+
+### `tg-pos-x` — horizontal axis only
+
+`tg-pos-x` sets only `justify-content`, leaving `align-items` untouched.
+
+| Class | `justify-content` |
+|---|---|
+| `tg-pos-x(start)` | `flex-start` |
+| `tg-pos-x(center)` | `center` |
+| `tg-pos-x(end)` | `flex-end` |
+| `tg-pos-x(none)` | `unset` |
+
+```html html
+<!-- Cells centred horizontally, default vertical alignment -->
+<div class="tg-row tg-mode(thin) tg-pos-x(center)">
+  <div class="tg-cell">Centred horizontally</div>
+  <div class="tg-cell">Me too</div>
+</div>
+```
+
+### `tg-pos-y` — vertical axis only
+
+`tg-pos-y` sets only `align-items`, leaving `justify-content` untouched.
+
+| Class | `align-items` |
+|---|---|
+| `tg-pos-y(start)` | `flex-start` |
+| `tg-pos-y(center)` | `center` |
+| `tg-pos-y(end)` | `flex-end` |
+| `tg-pos-y(none)` | `unset` |
+
+```html html
+<!-- Cells vertically centred inside a fixed-height row -->
+<div class="tg-row tg-mode(thin) tg-pos-y(center)" style="height: 120px;">
+  <div class="tg-cell">Short</div>
+  <div class="tg-cell" style="font-size: 2rem;">Tall</div>
+  <div class="tg-cell">Also short</div>
+</div>
+```
+
+---
+
+## Space Utilities
+
+Space utilities distribute **leftover space** in the row. Where `tg-pos` places cells at a position, `tg-space` spreads them out. These are applied on the `.tg-row` element and affect cell distribution along both axes.
+
+### `tg-space` — both axes
+
+`tg-space` sets both `justify-content` and `align-content`.
+
+| Class | `justify-content` | `align-content` |
+|---|---|---|
+| `tg-space(between)` | `space-between` | `space-between` |
+| `tg-space(around)` | `space-around` | `space-around` |
+| `tg-space(evenly)` | `space-evenly` | `space-evenly` |
+| `tg-space(none)` | `none` | `none` |
+
+<Tabs>
+  <Tab title="between">
+    The first and last cells are pinned to the row edges; remaining space is divided equally between cells.
+
+    ```html html
+    <div class="tg-row tg-mode(thin) tg-space(between)">
+      <div class="tg-cell">Left</div>
+      <div class="tg-cell">Middle</div>
+      <div class="tg-cell">Right</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="around">
+    Each cell gets equal space on both sides, so edge cells have half the space of interior cells.
+
+    ```html html
+    <div class="tg-row tg-mode(thin) tg-space(around)">
+      <div class="tg-cell">Alpha</div>
+      <div class="tg-cell">Beta</div>
+      <div class="tg-cell">Gamma</div>
+    </div>
+    ```
+  </Tab>
+  <Tab title="evenly">
+    Space is distributed so every gap — including before the first cell and after the last — is exactly equal.
+
+    ```html html
+    <div class="tg-row tg-mode(thin) tg-space(evenly)">
+      <div class="tg-cell">One</div>
+      <div class="tg-cell">Two</div>
+      <div class="tg-cell">Three</div>
+    </div>
+    ```
+  </Tab>
+</Tabs>
+
+### `tg-space-x` — horizontal axis only
+
+`tg-space-x` sets only `justify-content`.
+
+| Class | `justify-content` |
+|---|---|
+| `tg-space-x(between)` | `space-between` |
+| `tg-space-x(around)` | `space-around` |
+| `tg-space-x(evenly)` | `space-evenly` |
+| `tg-space-x(none)` | `unset` |
+
+### `tg-space-y` — vertical axis only
+
+`tg-space-y` sets only `align-content`. This is most visible in multi-line rows where cells have wrapped onto more than one line.
+
+| Class | `align-content` |
+|---|---|
+| `tg-space-y(between)` | `space-between` |
+| `tg-space-y(around)` | `space-around` |
+| `tg-space-y(evenly)` | `space-evenly` |
+| `tg-space-y(none)` | `unset` |
+
+```html html
+<!-- Wrapped rows distributed vertically with space between them -->
+<div class="tg-row tg-frac(1/3) tg-space-y(between)" style="height: 300px;">
+  <div class="tg-cell">Row 1, Cell A</div>
+  <div class="tg-cell">Row 1, Cell B</div>
+  <div class="tg-cell">Row 1, Cell C</div>
+  <div class="tg-cell">Row 2, Cell A</div>
+  <div class="tg-cell">Row 2, Cell B</div>
+  <div class="tg-cell">Row 2, Cell C</div>
+</div>
+```
+
+---
+
+## Practical Examples
+
+<Steps>
+  <Step title="Centred hero layout">
+    Use `tg-pos(center)` on a fixed-height row to centre a cell both horizontally and vertically — no custom CSS needed.
+
+    ```html html
+    <div class="tg-row tg-pos(center)" style="min-height: 400px;">
+      <div class="tg-cell tg-mode(thin)">
+        <h1>Centred headline</h1>
+        <p>Perfectly centred in both axes.</p>
+      </div>
+    </div>
+    ```
+  </Step>
+  <Step title="Navigation bar with spaced items">
+    Use `tg-space(between)` and `tg-pos-y(center)` together for a classic nav layout: logo on the left, links on the right, all vertically centred.
+
+    ```html html
+    <div class="tg-row tg-mode(thin) tg-space(between) tg-pos-y(center)">
+      <div class="tg-cell">Logo</div>
+      <div class="tg-cell">Home</div>
+      <div class="tg-cell">About</div>
+      <div class="tg-cell">Contact</div>
+    </div>
+    ```
+  </Step>
+  <Step title="Right-aligned action buttons">
+    Use `tg-pos-x(end)` on a thin-mode row to push a group of buttons to the right edge.
+
+    ```html html
+    <div class="tg-row tg-mode(thin) tg-pos-x(end)">
+      <div class="tg-cell">Cancel</div>
+      <div class="tg-cell">Save</div>
+    </div>
+    ```
+  </Step>
+  <Step title="Evenly spaced icon bar">
+    Use `tg-space(evenly)` for a row of icons where the whitespace between (and around) each icon is perfectly equal.
+
+    ```html html
+    <div class="tg-row tg-mode(thin) tg-space(evenly)">
+      <div class="tg-cell">🏠</div>
+      <div class="tg-cell">🔍</div>
+      <div class="tg-cell">💬</div>
+      <div class="tg-cell">👤</div>
+    </div>
+    ```
+  </Step>
+</Steps>
+
+---
+
+## Combining `tg-pos` and `tg-space`
+
+`tg-pos` and `tg-space` both write to `justify-content`, so applying both on the same row will let the last class in the CSS cascade win. Use the directional variants to avoid conflicts: for example, combine `tg-pos-y(center)` (sets `align-items`) with `tg-space-x(between)` (sets `justify-content`) without any collision.
+
+```html html
+<!-- Cells spread horizontally + centred vertically, no conflict -->
+<div class="tg-row tg-mode(thin) tg-space-x(between) tg-pos-y(center)" style="height: 80px;">
+  <div class="tg-cell">Left item</div>
+  <div class="tg-cell">Centre item</div>
+  <div class="tg-cell">Right item</div>
+</div>
+```
+
+<Note>
+  All positioning and spacing classes are applied on `.tg-row`, not on `.tg-cell`. They control how the Flexbox container distributes its children — individual cell sizing is handled separately by mode, frac, or span classes.
+</Note>
+
+---
+
+## Responsive Positioning
+
+Every position and space class supports all five responsive breakpoint prefixes. Combine them to build layouts that reposition cells at different screen sizes.
+
+```html html
+<!-- Stacked + start-aligned on mobile, horizontal + centred on desktop -->
+<div class="tg-row tg-mode(stacked) tg-pos(start) md:tg-mode(thin) md:tg-pos(center)">
+  <div class="tg-cell">Item A</div>
+  <div class="tg-cell">Item B</div>
+  <div class="tg-cell">Item C</div>
+</div>
+```
+
+| Prefix | Min-width |
+|---|---|
+| `xs:` | 36em (576px) |
+| `sm:` | 48em (768px) |
+| `md:` | 64em (1024px) |
+| `lg:` | 75em (1200px) |
+| `xl:` | 90em (1440px) |

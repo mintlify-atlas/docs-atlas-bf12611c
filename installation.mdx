@@ -1,0 +1,174 @@
+---
+title: "Installing Tidgrid CSS Library: CDN, npm, and SCSS"
+sidebarTitle: "Installation"
+description: "Add Tidgrid to your project via CDN link, npm install, SCSS import, or build from source. Includes setup steps for all environments and a production CSS tip."
+---
+
+Tidgrid is available through multiple installation paths depending on how your project is structured. For a quick prototype you can link the CDN stylesheet in seconds. For projects with a SCSS build pipeline you can import individual modules and configure every variable at compile time. You can also clone and build the source directly if you need the absolute latest unreleased changes.
+
+<Warning>
+  Tidgrid is in early alpha (v0.1.0-alpha.2). The CDN URL and package API may change between releases. Pin your version explicitly in production.
+</Warning>
+
+## CDN
+
+The fastest way to try Tidgrid is to drop a `<link>` tag into your HTML document. This delivers the full pre-built stylesheet from jsDelivr with no tooling required.
+
+<Steps>
+  <Step title="Add the stylesheet link">
+    Paste the following tag inside the `<head>` of your HTML file:
+
+    ```html
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/sneikki/tidgrid@v0.1.0-alpha.2/build/tidgrid.min.css"
+    >
+    ```
+  </Step>
+  <Step title="Start using Tidgrid classes">
+    Add `tg-row` and `tg-cell` to your markup. No build step needed.
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/sneikki/tidgrid@v0.1.0-alpha.2/build/tidgrid.min.css"
+        >
+      </head>
+      <body>
+        <div class="tg-row tg-mode(auto) tg-gap(md)">
+          <div class="tg-cell">Left</div>
+          <div class="tg-cell">Right</div>
+        </div>
+      </body>
+    </html>
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  The CDN build includes every generated utility class. This is ideal for development and prototyping but should not be shipped to production as-is. See the [production tip](#production-tip) below.
+</Note>
+
+## npm
+
+Install Tidgrid from the npm registry to use it in a project with a Node.js–based build pipeline.
+
+<CodeGroup>
+  ```bash npm
+  npm install tidgrid
+  ```
+  ```bash yarn
+  yarn add tidgrid
+  ```
+  ```bash pnpm
+  pnpm add tidgrid
+  ```
+</CodeGroup>
+
+## SCSS import
+
+If your project already compiles SCSS, import Tidgrid directly into your stylesheet. This is the recommended approach for any project that benefits from customization, as it lets you override SCSS variables at import time.
+
+### Import everything
+
+Use the main entry point to import the full library — the grid, layout modules, and the Tidiness CSS reset:
+
+```scss
+@use 'tidgrid/src/index';
+```
+
+### Import specific modules
+
+To include only what you need, import sub-modules individually:
+
+```scss
+// Grid system only (rows, cells, gaps, positioning)
+@use 'tidgrid/src/grid';
+
+// Layout helpers only (container, section)
+@use 'tidgrid/src/layout';
+```
+
+<Tip>
+  Importing sub-modules skips the Tidiness CSS reset found in `tidgrid/src/tidiness`. If you want the reset without the layout helpers, import `tidgrid/src/tidiness` on its own.
+</Tip>
+
+To pass configuration variables, use SCSS `@use ... with ()`. See [Customization](/customization) for a full reference of available variables.
+
+```scss
+@use 'tidgrid/src/index' with (
+  $syntax: dashes,
+  $use-namespace: false
+);
+```
+
+## Build from source
+
+Clone and compile Tidgrid locally to get the latest unreleased changes or to produce a custom build with your own SCSS overrides baked in.
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/sneikki/tidgrid.git
+    cd tidgrid
+    ```
+  </Step>
+  <Step title="Install dependencies">
+    ```bash
+    npm install
+    ```
+    This installs the Sass compiler and other development tooling.
+  </Step>
+  <Step title="Compile the CSS">
+    <CodeGroup>
+      ```bash Build (unminified)
+      npm run compile
+      ```
+      ```bash Build (minified)
+      npm run compile:minimized
+      ```
+    </CodeGroup>
+
+    Both commands output files to the `build/` directory. `npm run build` is an alias for `npm run compile`.
+  </Step>
+  <Step title="Link the output in your project">
+    Reference the compiled file from your HTML:
+
+    ```html
+    <link rel="stylesheet" href="path/to/tidgrid/build/tidgrid.css">
+    ```
+
+    Or copy `build/tidgrid.css` into your project's static assets folder.
+  </Step>
+</Steps>
+
+<Accordion title="Cleaning the build directory">
+  To remove all compiled output and start fresh, run:
+
+  ```bash
+  npm run clean
+  ```
+
+  This deletes the entire `build/` folder. Re-run `npm run compile` to regenerate it.
+</Accordion>
+
+## Production tip
+
+Tidgrid generates utility classes for every combination of property, value, and breakpoint — including many you won't use in a given project. Before deploying to production, use a tool like [PurgeCSS](https://purgecss.com/) to strip unused rules and dramatically reduce the file size.
+
+```js
+// Example PurgeCSS configuration (purgecss.config.js)
+module.exports = {
+  content: ['./src/**/*.html', './src/**/*.js'],
+  css: ['./build/tidgrid.css'],
+};
+```
+
+<Tip>
+  If you import Tidgrid via SCSS, consider only importing the modules you actually use (`tidgrid/src/grid`, `tidgrid/src/layout`) rather than the full `tidgrid/src/index`. This narrows the set of generated classes before PurgeCSS even runs.
+</Tip>

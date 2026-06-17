@@ -1,0 +1,101 @@
+{
+  "projectType": "sdk-library",
+  "projectName": "Tidgrid",
+  "projectDescription": "A tiny, expressive CSS library built around Flexbox that provides utility classes for responsive grid layouts, spacing, positioning, and layout structure.",
+  "theme": "willow",
+  "primaryColor": "#344c5c",
+  "lightColor": "#94a4ac",
+  "darkColor": "#d3d8dc",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "customization"
+            ]
+          },
+          {
+            "group": "Grid",
+            "pages": [
+              "grid/rows-and-cells",
+              "grid/spans-and-fractions",
+              "grid/gaps",
+              "grid/positioning"
+            ]
+          },
+          {
+            "group": "Layout",
+            "pages": [
+              "layout/container",
+              "layout/section"
+            ]
+          },
+          {
+            "group": "Responsive Design",
+            "pages": [
+              "responsive/breakpoints",
+              "responsive/responsive-classes"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Class Reference",
+            "pages": [
+              "reference/row-classes",
+              "reference/cell-classes",
+              "reference/gap-classes",
+              "reference/position-classes",
+              "reference/layout-classes"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Flexbox-based responsive grid system with row and cell primitives",
+    "Expressive parenthesis-style utility class syntax (e.g. tg-mode(auto))",
+    "Responsive variants for every class via breakpoint prefixes (xs:, sm:, md:, lg:, xl:)",
+    "12-column and 16-column span systems",
+    "Fractional cell sizing (1/2, 1/3, 1/4, 2/3)",
+    "Five gap sizes (none, xs, sm, md, lg, xl) with per-axis control",
+    "Flexbox positioning and spacing utilities (pos, pos-x, pos-y, space, space-x, space-y)",
+    "Container with responsive max-width breakpoints",
+    "Minimal CSS reset (tidiness) included",
+    "SCSS source with configurable namespaces, breakpoints, and syntax"
+  ],
+  "publicApiSurface": [
+    ".tg-row",
+    ".tg-cell",
+    ".tg-mode(auto|stacked|thin|fill|disabled)",
+    ".tg-flow(wrap|keep)",
+    ".tg-frac(1/2|1/3|1/4|2/3)",
+    ".tg-size(12|16) .tg-row.tg-span(n)",
+    ".tg-cell.tg-span(n)",
+    ".tg-cell.tg-order(first|last|none)",
+    ".tg-gap(none|xs|sm|md|lg|xl)",
+    ".tg-x-gap(none|xs|sm|md|lg|xl)",
+    ".tg-y-gap(none|xs|sm|md|lg|xl)",
+    ".tg-pos(start|center|end|none)",
+    ".tg-pos-x(start|center|end|none)",
+    ".tg-pos-y(start|center|end|none)",
+    ".tg-space(between|around|evenly|none)",
+    ".tg-space-x(between|around|evenly|none)",
+    ".tg-space-y(between|around|evenly|none)",
+    ".tg-container",
+    ".tg-container(xs|sm|md|lg|xl)",
+    ".tg-section",
+    ".tg-footer",
+    ".tg-section-padding(default|none)",
+    "Breakpoint prefixes: xs:, sm:, md:, lg:, xl:"
+  ]
+}

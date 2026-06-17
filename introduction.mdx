@@ -1,0 +1,122 @@
+---
+title: "Tidgrid: Tiny Flexbox CSS Library for Responsive Layouts"
+sidebarTitle: "Introduction"
+description: "Meet Tidgrid — a tiny, expressive CSS library built on Flexbox. Learn its core row-and-cell model, class syntax, tg- namespace, and built-in CSS reset."
+---
+
+Tidgrid is a lightweight CSS library that brings structure and clarity to responsive web layouts using Flexbox. Rather than relying on a complex grid system with dozens of configuration classes, Tidgrid is built around a simple mental model: **rows** contain **cells**, and modifier classes control how those cells behave. Every utility follows a consistent, readable naming convention that makes your HTML self-documenting at a glance.
+
+<Warning>
+  Tidgrid is currently in **early alpha** (v0.1.0-alpha.2). Bugs are likely, and some features may not behave as expected. The API may change before a stable release. If you encounter an issue or have a suggestion, contributions are welcome.
+</Warning>
+
+## Core concepts
+
+Tidgrid layouts are built from two fundamental building blocks: `tg-row` and `tg-cell`. A row is a Flexbox container (`display: flex; flex-flow: row wrap`) and each cell is a direct child that takes up space within it. Modifier classes are stacked on top of these base elements to control sizing, spacing, alignment, and responsive behavior.
+
+```html
+<div class="tg-row tg-mode(auto) tg-gap(md)">
+  <div class="tg-cell">Column one</div>
+  <div class="tg-cell">Column two</div>
+  <div class="tg-cell">Column three</div>
+</div>
+```
+
+## Class syntax
+
+Tidgrid uses an **expressive parenthesis-style syntax** by default, where modifier values are written inside parentheses after the property name. This makes classes read almost like function calls and keeps the intent of each class immediately clear.
+
+<Tabs>
+  <Tab title="Parentheses (default)">
+    ```html
+    <div class="tg-row tg-mode(auto) tg-gap(md)">
+      <div class="tg-cell tg-frac(1/2)">Half width</div>
+      <div class="tg-cell tg-frac(1/2)">Half width</div>
+    </div>
+    ```
+    Classes take the form `tg-property(value)`, e.g. `tg-mode(auto)`, `tg-gap(lg)`, `tg-frac(1/3)`.
+  </Tab>
+  <Tab title="Dashes (alternate)">
+    ```html
+    <div class="tg-row tg-mode-auto tg-gap-md">
+      <div class="tg-cell tg-frac-1-2">Half width</div>
+      <div class="tg-cell tg-frac-1-2">Half width</div>
+    </div>
+    ```
+    The dash syntax produces `tg-property-value` class names and can be enabled via the `$syntax` SCSS variable. See [Customization](/customization) for details.
+  </Tab>
+</Tabs>
+
+## The `tg-` namespace
+
+All Tidgrid class names are prefixed with `tg-` by default. This namespace prevents collisions with your own CSS and makes it easy to identify Tidgrid-managed elements in your markup. The prefix applies to structural classes (`tg-row`, `tg-cell`), modifier classes (`tg-mode(auto)`), and layout helpers (`tg-container`, `tg-section`).
+
+If you're building from SCSS source, the namespace can be removed entirely by setting `$use-namespace: false`, which generates unprefixed class names like `row` and `cell` instead. See [Customization](/customization) for details.
+
+## Responsive modifiers
+
+Every modifier class in Tidgrid can be scoped to a breakpoint by prepending a breakpoint prefix separated by a colon. Breakpoints are min-width and mobile-first.
+
+```html
+<!-- Stacked on small screens, auto-width side-by-side at md and above -->
+<div class="tg-row tg-mode(stacked) md:tg-mode(auto)">
+  <div class="tg-cell">Left</div>
+  <div class="tg-cell">Right</div>
+</div>
+```
+
+The five built-in breakpoints are:
+
+| Prefix | Min-width | Approx. px |
+|--------|-----------|------------|
+| `xs`   | 36em      | 576px      |
+| `sm`   | 48em      | 768px      |
+| `md`   | 64em      | 1024px     |
+| `lg`   | 75em      | 1200px     |
+| `xl`   | 90em      | 1440px     |
+
+## Tidiness — the CSS reset
+
+Tidgrid ships with a minimal CSS reset called **Tidiness** that is automatically included when you import the library. It normalizes the most common browser inconsistencies without imposing opinionated styles on your project. The reset draws from proven sources:
+
+- **normalize.css** — `body` margin, `h1` sizing, `[hidden]` display
+- **Bootstrap** — `box-sizing: border-box`, heading margin resets, `<p>` margin
+- **Tailwind CSS** — media element `display: block`, list and form element margin/padding resets
+
+<Note>
+  Tidiness is always included when you use the CDN build or import `tidgrid/src/index`. If you want only the grid or layout modules without the reset, import specific sub-modules from source. See [Installation](/installation).
+</Note>
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="Flexbox-powered grid" icon="table-cells">
+    Rows and cells backed by native Flexbox — no hacks, no floats, no CSS Grid polyfills needed.
+  </Card>
+  <Card title="Expressive class syntax" icon="code">
+    Parenthesis-style class names like `tg-mode(auto)` and `tg-gap(lg)` keep your markup readable and intention clear.
+  </Card>
+  <Card title="Mobile-first breakpoints" icon="mobile">
+    Five configurable breakpoints (`xs` through `xl`) with responsive prefix syntax on every modifier class.
+  </Card>
+  <Card title="Tidiness reset included" icon="broom">
+    A lightweight CSS reset drawn from normalize.css, Bootstrap, and Tailwind is bundled automatically.
+  </Card>
+  <Card title="Configurable via SCSS" icon="sliders">
+    Override breakpoints, gap sizes, syntax style, namespace, and more using standard SCSS `@use ... with ()` configuration.
+  </Card>
+  <Card title="Tiny by design" icon="feather">
+    Focused on layout and structure only — no component styles, no JavaScript, no opinionated theme to fight against.
+  </Card>
+</CardGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="circle-down" href="/installation">
+    Add Tidgrid to your project via CDN, npm, or building from source.
+  </Card>
+  <Card title="Customization" icon="gear" href="/customization">
+    Configure SCSS variables to tailor breakpoints, syntax, namespace, and spacing.
+  </Card>
+</CardGroup>
